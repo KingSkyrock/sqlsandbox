@@ -1,0 +1,279 @@
+* {
+  font-family: 'Inter', sans-serif;
+}
+*:focus {
+    outline: none;
+}
+
+html, body, .main {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.main {
+  display: grid;
+  grid-template-rows: 45px 1fr;
+  max-height: 100%;
+}
+
+.header {
+  background-color: #141E36;
+  box-sizing: border-box;
+  padding-top: 6px;
+}
+
+.new-sql {
+  height: 85%;
+  box-sizing: border-box;
+  padding: 7px;
+  border: 0;
+  margin-left: 0.5%;
+  color: #ebedf0;
+  border-radius: 5px;
+  background-color: #6253de;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.load-sql {
+  height: 85%;
+  box-sizing: border-box;
+  padding: 7px;
+  border: 0;
+  margin-left: 0.5%;
+  color: #ebedf0;
+  border-radius: 5px;
+  background-color: #28334F;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.load-sql:hover {
+  background-color: #2C3754;
+}
+
+.new-sql:hover {
+  background-color: #7568e2;
+}
+
+.select-modal-buttons {
+  display: grid;
+  grid-template-rows: 45% 10% 45%;
+  height: 100%;
+}
+
+.select-modal-buttons button {
+  font-size: 40px;
+  height: 100%;
+  padding: 50px;
+  margin: auto;
+  width: 70%;
+}
+
+.settings {
+  float: right;
+  margin-right: 0.5%;
+}
+
+.settings-header {
+  color: #ebedf0;
+}
+.settings-label {
+  color: #ebedf0;
+}
+
+.svg-inline--fa.fa-w-16 {
+  width: 0.65em;
+}
+
+.title {
+  margin:auto;
+  width: 50%;
+  text-align: center;
+  margin-top: 5%;
+  font-size: 50px;
+  color: white;
+}
+
+.subtitle {
+  margin:auto;
+  width: 50%;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 25px;
+  color: white;
+}
+
+.rows {
+  background-color: #2C3754;
+  overflow: auto;
+  height: 100%;
+}
+
+.tables-container {
+  border-left: 0px;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.input-container {
+  width: 100%;
+  height: 100%;
+  background-color: #35415e;
+}
+
+.editor * {
+  font-family: monospace !important;
+  font-size: 20px;
+}
+
+.input-container-again {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  color: white;
+}
+
+.cm-s-material-palenight.CodeMirror {
+  background: #00FF00;
+  width: 100%;
+  height: 100%;
+}
+
+.cm-s-material-palenight .CodeMirror-cursor {
+  border-left: 1px solid #6253de !important;
+
+}
+
+.input {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  box-sizing: border-box;
+  border: 0px;
+}
+
+.run {
+  height: 100%;
+  width: 100%;
+  border: 0px;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 0;
+  margin-left: 0.5%;
+  color: #ebedf0;
+  background-color: #28334F;
+  cursor: pointer;
+}
+
+.tables {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  overflow: auto;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+  background-color: #28334f;
+}
+
+.tablename {
+  position: relative
+}
+
+.tablename:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 1.5px;
+  bottom: 0;
+  left: 0;
+  background-color: #868e9c;
+  visibility: hidden;
+  transform: scaleX(0);
+  transition: all 0.15s ease-in-out;
+}
+
+.tablename:hover:before {
+  visibility: visible;
+  transform: scaleX(1.1);
+}
+
+.tables-top {
+  background-color: #192440;
+  padding: 14px;
+  padding-left: 20px;
+  color: #FFF;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.tablecell {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  padding: 12px;
+  padding-left: 20px;
+  font-size: 13px;
+  color: #f2f6ff;
+  background-color: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.schema {
+  background-color: #2c3754;
+  width: 87%;
+  padding: 5px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-top: 0px;
+  font-size: 12.5px;
+  color: #e6ebfa;
+  box-sizing: border-box;
+  margin-left: 5%;
+  padding-top: 10px;
+  border-radius: 10px;
+}
+
+.cm-s-material.CodeMirror {
+  height: 100%;
+  width: 100%;
+}
+
+.icon {
+  margin-right: 5px;
+}
+
+.type-label {
+  font-size: 11.5px;
+  color: #d5d9e6;
+}
+
+.seperator {
+  height: 3px;
+}
+
+.chevron {
+  float: right;
+}
+
+.content-container {
+  grid-template-columns: minmax(0,4fr) minmax(250px,1fr);
+  display: grid;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.content-area {
+  display: grid;
+  border-top: 0px;
+  border-left: 0px;
+  grid-template-rows: 1fr 150px;
+  overflow: auto;
+}
