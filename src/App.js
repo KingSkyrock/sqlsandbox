@@ -100,9 +100,13 @@ export default class App extends React.Component {
             contentLabel="New project modal"
           >
             <div className="select-modal-buttons">
-              <button className="new-sql" onClick={() => this.startNew(false)}>New empty database</button>
+              <div className="template-select">
+                <h2 className="template-select-header">Templates</h2>
+                <button onClick={() => this.startNew(1)}>Northwind</button>
+                <button onClick={() => this.startNew(2)}>Hostpital</button>
+              </div>
               <div></div>
-              <button className="new-sql" onClick={() => this.startNew(true)}>New from Northwind template</button>
+              <button className="new-empty" onClick={() => this.startNew(false)}>New empty database</button>
             </div>
           </Modal>
           <button className="load-sql" onClick={() => this.loadSQL()}>Load SQL</button>
@@ -165,23 +169,30 @@ export default class App extends React.Component {
                   style={customStyles2}
                   contentLabel="Projects Modal"
                 >
-                  {Object.entries(window.localStorage).map((project) => {
-                    return (
-                      <SelectCell id={project[1]} name={project[0]} select={(name, id) => {
-                        history.replaceState({}, name, "http://localhost:3000/" + id)
-                        axios.post('/startsql', {id: id}, {}).then((res) => {
-                          this.setState({
-                            currentProjectId: id,
-                            SQLprojects: false,
-                            tables: res.data.tables
-                          });
-                        })
-                        .catch((error) => {
-                          alert(error)
-                        })
-                      }}/>
-                    )
-                  })}
+                <div className="select-modal-buttons">
+                  <div className="template-select">
+                    <h2 className="template-select-header">Projects</h2>
+                    {Object.entries(window.localStorage).map((project) => {
+                      return (
+                        <SelectCell id={project[1]} name={project[0]} select={(name, id) => {
+                          history.replaceState({}, name, "http://localhost:3000/" + id)
+                          axios.post('/startsql', {id: id}, {}).then((res) => {
+                            this.setState({
+                              currentProjectId: id,
+                              SQLprojects: false,
+                              tables: res.data.tables
+                            });
+                          })
+                          .catch((error) => {
+                            alert(error)
+                          })
+                        }}/>
+                      )
+                    })}
+                  </div>
+                  <div></div>
+                  <button className="new-empty">Load .sqlite file</button>
+                </div>
                 </Modal>
               }
             </div>
@@ -272,7 +283,7 @@ export default class App extends React.Component {
     storage.setItem(name, newId );
     history.replaceState({}, name, "http://localhost:3000/" + newId)
     console.log("New database created with UUID: " + newId)
-    axios.post(type, {id: newId}, {}).then((res) => {
+    axios.post(type, {id: newId, template: template}, {}).then((res) => {
       this.setState({currentProjectId: newId, creatingNew: false}, () => {
         axios.post('/startsql', {id: this.state.currentProjectId}, {}).then((res) => {
           this.setState({

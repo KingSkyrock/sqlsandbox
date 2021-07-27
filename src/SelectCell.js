@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import './styles.scss';
 
 export default class SelectCell extends React.Component {
   constructor(props) {
@@ -15,7 +16,7 @@ export default class SelectCell extends React.Component {
   render() {
     return (
       <div>
-        <button style={{backgroundColor: this.state.bgColor, border: "1px solid lightgray", width: "100px"}} onClick={() => this.handleClick()}> {this.props.name} </button>
+        <button onClick={() => this.handleClick()}> {this.props.name} </button>
         <br />
       </div>
     );

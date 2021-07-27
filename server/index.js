@@ -54,7 +54,13 @@ app.post('/startsql', (req, res) => {
 
 app.post('/loadtemplate', (req, res) => {
   console.log(req.body.id);
-  fs.copyFile('Northwind_small.sqlite', `data/${req.body.id}.sqlite`, {
+  var template = ""
+  if (req.body.template == 1) {
+    template = "Northwind_small.sqlite"
+  } else if (req.body.template == 2) {
+    template = "Hospital.sqlite"
+  }
+  fs.copyFile(template, `data/${req.body.id}.sqlite`, {
     done: function(err) {
       data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
 
