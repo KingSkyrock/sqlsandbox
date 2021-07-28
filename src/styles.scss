@@ -13,6 +13,27 @@ html, body, .main {
   box-sizing: border-box;
 }
 
+table {
+  color: #b8bed1;
+  width: 100%;
+  border-spacing: 0 0px;
+  direction: ltr;
+}
+
+thead th {
+  padding: 12.8px;
+  text-align: left;
+  position: sticky;
+  top: 0px;
+  background-color: #28334F;
+}
+
+tbody td {
+  padding: 15px;
+  font-family: monospace;
+  font-size: 15px;
+}
+
 .main {
   display: grid;
   grid-template-rows: 45px 1fr;
@@ -175,6 +196,8 @@ html, body, .main {
   background-color: #2C3754;
   overflow: auto;
   height: 100%;
+  box-sizing: border-box;
+  direction: rtl;
 }
 
 .tables-container {
@@ -188,6 +211,11 @@ html, body, .main {
   width: 100%;
   height: 100%;
   background-color: #35415e;
+}
+
+.editor {
+  width: 100%;
+  overflow: auto;
 }
 
 .editor * {
@@ -208,6 +236,7 @@ html, body, .main {
   width: 100%;
   height: 100%;
   max-width: 100%;
+  z-index: 0;
 }
 
 .cm-s-material-palenight .CodeMirror-cursor {

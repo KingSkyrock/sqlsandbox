@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import './styles.scss';
 
 export default class ValuesDisplay extends React.Component {
   constructor(props) {
@@ -14,18 +15,19 @@ export default class ValuesDisplay extends React.Component {
     return (
       <div>
         <table>
-          <tbody>
+          <thead>
             <tr key={1}>
              {
                this.props.keys.map((key,i)=>
-                  <td key={i}>{key}</td>
+                  <th key={i}>{key}</th>
                )
              }
-            </tr>
-
+          </tr>
+          </thead>
+          <tbody>
             {
               this.props.values.map((values,i) =>(
-                <tr key={i+1}>
+                <tr className="value-row" key={i+1}>
                  {
                    values.map((value,j)=>
                       <td key={j}>{value}</td>

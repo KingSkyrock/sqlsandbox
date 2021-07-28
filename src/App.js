@@ -29,7 +29,8 @@ const customStyles = {
     height: '80%',
     width: '65%',
     minWidth: '350px',
-    backgroundColor: '35415E'
+    backgroundColor: '35415E',
+    zIndex: 0
   },
   overlay: {
      background: 'rgba(90, 111, 161, 0.3)'
@@ -50,7 +51,8 @@ const customStyles2 = {
     height: '80%',
     width: '65%',
     minWidth: '350px',
-    backgroundColor: '35415E'
+    backgroundColor: '35415E',
+    zIndex: 1000
   },
   overlay: {
      background: 'rgba(90, 111, 161, 0.3)'
