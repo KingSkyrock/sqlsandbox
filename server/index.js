@@ -13,7 +13,7 @@ app.use(express.static(DIST_DIR));
 app.get('/api', (req, res) => {
   res.send(mockResponse);
 });
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
  res.sendFile(HTML_FILE);
 });
 
@@ -59,6 +59,8 @@ app.post('/loadtemplate', (req, res) => {
     template = "Northwind_small.sqlite"
   } else if (req.body.template == 2) {
     template = "Hospital.sqlite"
+  } else if (req.body.template == 3) {
+    template = "PlanetExpress.sqlite"
   }
   fs.copyFile(template, `data/${req.body.id}.sqlite`, {
     done: function(err) {

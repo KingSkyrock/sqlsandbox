@@ -14,30 +14,10 @@ import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from 'react-modal';
 import {UnControlled as CodeMirror} from 'react-codemirror2'
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
 
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    paddingTop: '20px',
-    paddingLeft: '50px',
-    border: '0px',
-    height: '80%',
-    width: '65%',
-    minWidth: '350px',
-    backgroundColor: '35415E',
-    zIndex: 0
-  },
-  overlay: {
-     background: 'rgba(90, 111, 161, 0.3)'
-   }
-};
-
-const customStyles2 = {
+const modalStyle = {
   content: {
     top: '50%',
     left: '50%',
@@ -52,12 +32,39 @@ const customStyles2 = {
     width: '65%',
     minWidth: '350px',
     backgroundColor: '35415E',
-    zIndex: 1000
+    zIndex: 0,
+    boxShadow: '0px 10px 20px 5px rgba(0, 0, 0, 0.3)',
   },
   overlay: {
-     background: 'rgba(90, 111, 161, 0.3)'
+     background: 'rgba(0, 0, 0, 0.3)'
    }
 };
+
+const newSqlModal = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    paddingTop: '35px',
+    paddingLeft: '45px',
+    paddingRight: '45px',
+    border: '0px',
+    height: '70%',
+    width: '35%',
+    minWidth: '350px',
+    borderRadius: '25px',
+    backgroundColor: '35415E',
+    zIndex: 0,
+    boxShadow: '0px 10px 20px 5px rgba(0, 0, 0, 0.3)',
+  },
+  overlay: {
+     background: 'rgba(0, 0, 0,  0.3)'
+   }
+};
+
 Modal.setAppElement('#root');
 export default class App extends React.Component {
   constructor(props) {
@@ -83,6 +90,7 @@ export default class App extends React.Component {
     this.closeModals = this.closeModals.bind(this);
   }
 
+
   closeModals(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -98,17 +106,17 @@ export default class App extends React.Component {
           <Modal
             isOpen={this.state.creatingNew}
             onRequestClose={this.closeModals}
-            style={customStyles2}
+            style={newSqlModal}
             contentLabel="New project modal"
           >
-            <div className="select-modal-buttons">
-              <div className="template-select">
-                <h2 className="template-select-header">Templates</h2>
-                <button onClick={() => this.startNew(1)}>Northwind</button>
-                <button onClick={() => this.startNew(2)}>Hostpital</button>
-              </div>
-              <div></div>
+            <div>
+              <div className="modal-title">New SQL Creation</div>
+              <div className="modal-subtitle">Create an empty database or use a template</div>
+              <br />
               <button className="new-empty" onClick={() => this.startNew(false)}>New empty database</button>
+              <button className="new-template" onClick={() => this.startNew(1)}>Northwind Template</button>
+              <button className="new-template" onClick={() => this.startNew(2)}>Hospital Template</button>
+              <button className="new-template2" onClick={() => this.startNew(3)}>Planet Express Template</button>
             </div>
           </Modal>
           <button className="load-sql" onClick={() => this.loadSQL()}>Load SQL</button>
@@ -117,7 +125,7 @@ export default class App extends React.Component {
             <Modal
               isOpen={this.state.settingsOpen}
               onRequestClose={this.closeModals}
-              style={customStyles}
+              style={modalStyle}
               contentLabel="Settings Modal"
             >
               <h1 className="settings-header">Settings</h1>
@@ -131,15 +139,17 @@ export default class App extends React.Component {
         <div className="content-container">
           <div className="content-area">
             <div className="rows">
-              {!this.state.currentProjectId &&
-                <div>
-                  <div className="title">Welcome</div>
-                  <div className="subtitle">Create a new database or load an existing one</div>
-                </div>
-              }
-              {this.state.keys &&
-                <ValuesDisplay keys={this.state.keys} values={this.state.values} valueAmount={this.state.valueAmount}  />
-              }
+              <SimpleBar>
+                {!this.state.currentProjectId &&
+                  <div>
+                    <div className="title">Welcome</div>
+                    <div className="subtitle">Create a new database or load an existing one</div>
+                  </div>
+                }
+                {this.state.keys &&
+                  <ValuesDisplay keys={this.state.keys} values={this.state.values} valueAmount={this.state.valueAmount}  />
+                }
+              </SimpleBar>
             </div>
             <div className="input-container">
               {this.state.currentProjectId &&
@@ -148,53 +158,52 @@ export default class App extends React.Component {
                     <button className="run" onClick={() => this.runSQL(this.state.sql)}>Run</button>
 
                   </div>
-                  <div className="editor">
-                    <CodeMirror
-                      value={this.state.sql}
-                      autoCursor={false}
-                      options={{
-                        mode: 'sql',
-                        theme: 'material-palenight',
-                        lineNumbers: true
-                      }}
-                      onChange={(editor, data, value) => {
-                        this.setState({sql: value})
-                      }}
-                    />
-                  </div>
+                    <div className="editor">
+                      <CodeMirror
+                        value={this.state.sql}
+                        autoCursor={false}
+                        options={{
+                          mode: 'sql',
+                          theme: 'material-palenight',
+                          lineNumbers: true
+                        }}
+                        onChange={(editor, data, value) => {
+                          this.setState({sql: value})
+                        }}
+                      />
+                    </div>
                 </div>
               }
               {this.state.SQLprojects &&
                 <Modal
                   isOpen={this.state.SQLprojects}
                   onRequestClose={this.closeModals}
-                  style={customStyles2}
+                  style={newSqlModal}
                   contentLabel="Projects Modal"
                 >
-                <div className="select-modal-buttons">
-                  <div className="template-select">
-                    <h2 className="template-select-header">Projects</h2>
-                    {Object.entries(window.localStorage).map((project) => {
-                      return (
-                        <SelectCell id={project[1]} name={project[0]} select={(name, id) => {
-                          history.replaceState({}, name, "http://localhost:3000/" + id)
-                          axios.post('/startsql', {id: id}, {}).then((res) => {
-                            this.setState({
-                              currentProjectId: id,
-                              SQLprojects: false,
-                              tables: res.data.tables
-                            });
-                          })
-                          .catch((error) => {
-                            alert(error)
-                          })
-                        }}/>
-                      )
-                    })}
-                  </div>
-                  <div></div>
-                  <button className="new-empty">Load .sqlite file</button>
-                </div>
+                  <div className="modal-title">Load a SQL</div>
+                  <div className="modal-subtitle">Select an existing project to load.</div>
+                    <div className="projects-list">
+                      <SimpleBar>
+                        {Object.entries(window.localStorage).map((project) => {
+                          return (
+                            <SelectCell id={project[1]} name={project[0]} select={(name, id) => {
+                              history.replaceState({}, name, "http://localhost:3000/" + id)
+                              axios.post('/startsql', {id: id}, {}).then((res) => {
+                                this.setState({
+                                  currentProjectId: id,
+                                  SQLprojects: false,
+                                  tables: res.data.tables
+                                });
+                              })
+                              .catch((error) => {
+                                alert(error)
+                              })
+                            }}/>
+                          )
+                        })}
+                      </SimpleBar>
+                    </div>
                 </Modal>
               }
             </div>
@@ -202,19 +211,21 @@ export default class App extends React.Component {
           <div className="tables-container">
             <div className="tables">
               <div className="tables-top" >Tables</div>
-              {this.state.tables.map((table) => {
-                return (
-                  <TableCell
-                    name={table.name}
-                    key={table.name}
-                    id={this.state.currentProjectId}
-                    open={this.state.openTable == table.name}
-                    select={(name) => {
-                      this.setState({openTable: name});
-                    }}
-                  />
-                )
-              })}
+              <SimpleBar>
+                {this.state.tables.map((table) => {
+                  return (
+                    <TableCell
+                      name={table.name}
+                      key={table.name}
+                      id={this.state.currentProjectId}
+                      open={this.state.openTable == table.name}
+                      select={(name) => {
+                        this.setState({openTable: name});
+                      }}
+                    />
+                  )
+                })}
+              </SimpleBar>
             </div>
           </div>
         </div>
@@ -222,77 +233,111 @@ export default class App extends React.Component {
     );
   }
 
-  runSQL(code) {
-    axios.post('/runsql', {code: code, id: this.state.currentProjectId}, {})
-      .then((res) => {
-        if (res.data.rows.length > 0) {
-          var keys = Object.keys(res.data.rows[0]);
-          var values = [];
-          var valuesData = []
-          var counter = 0;
-          var arr = []
-          for (var i = 0; i < res.data.rows.length; i++) {
-            for (var j = 0; j < Object.keys(res.data.rows[i]).length; j++) {
-              values.push(res.data.rows[i][Object.keys(res.data.rows[i])[j]]);
-            }
-          }
-          for(var i = 0; i < values.length; i++) {
-            counter += 1
-            if (counter >= Object.keys(res.data.rows[0]).length) {
-              arr.push(values[i])
-              counter = 0;
-              valuesData.push(arr);
-              arr = []
-            } else {
-              arr.push(values[i])
-            }
-          }
-          this.setState({keys: keys, values: valuesData, valueAmount: Object.keys(res.data.rows[0]).length});
-        } else {
-          this.setState({sql: ''});
-          axios.post('/startsql', {id: this.state.currentProjectId}, {}).then((res) => {
-            this.setState({
-              tables: res.data.tables
-            });
-          })
-          .catch((error) => {
-            alert(error)
-          })
-          var ast = this.parser.astify(code);
-          if (this.state.autoUpdate && ast.table && ast.table[0] && ast.table[0].table) {
-            this.runSQL("SELECT * FROM " + ast.table[0].table);
-          }
-        }
+  componentDidMount() {
+    document.addEventListener("keydown", (evt)=>{this.keyShortcuts(evt)}, false);
+    var regex = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i; //uuidv4
+    if (regex.test(window.location.pathname.substring(1))) {
+      axios.post('/startsql', {id: window.location.pathname.substring(1)}, {}).then((res) => {
+        this.setState({
+          currentProjectId: window.location.pathname.substring(1),
+          SQLprojects: false,
+          tables: res.data.tables
+        });
       })
       .catch((error) => {
-        alert(error.response.data.error.message)
+        alert(error)
       })
+    }
+  }
+
+  keyShortcuts(evt) {
+    if (evt.keyCode === 13 && !evt.shiftKey) {
+      this.runSQL(this.state.sql);
+    }
+  }
+
+  runSQL(code) {
+    var codearray = code.split(";")
+    for (var i in codearray) {
+      if (codearray[i] != "" && codearray[i] != " ") {
+        axios.post('/runsql', {code: codearray[i], id: this.state.currentProjectId}, {})
+          .then((res) => {
+            if (res.data.rows.length > 0) {
+              var keys = Object.keys(res.data.rows[0]);
+              var values = [];
+              var valuesData = []
+              var counter = 0;
+              var arr = []
+              for (var i = 0; i < res.data.rows.length; i++) {
+                for (var j = 0; j < Object.keys(res.data.rows[i]).length; j++) {
+                  values.push(res.data.rows[i][Object.keys(res.data.rows[i])[j]]);
+                }
+              }
+              for(var i = 0; i < values.length; i++) {
+                counter += 1
+                if (counter >= Object.keys(res.data.rows[0]).length) {
+                  arr.push(values[i])
+                  counter = 0;
+                  valuesData.push(arr);
+                  arr = []
+                } else {
+                  arr.push(values[i])
+                }
+              }
+              this.setState({keys: keys, values: valuesData, valueAmount: Object.keys(res.data.rows[0]).length});
+            } else {
+              this.setState({sql: ''});
+              axios.post('/startsql', {id: this.state.currentProjectId}, {}).then((res) => {
+                this.setState({
+                  tables: res.data.tables
+                });
+              })
+              .catch((error) => {
+                alert(error)
+              })
+              var ast = this.parser.astify(code);
+              if (this.state.autoUpdate && ast.table && ast.table[0] && ast.table[0].table) {
+                this.runSQL("SELECT * FROM " + ast.table[0].table);
+              }
+            }
+          })
+          .catch((error) => {
+            alert(error.response.data.error.message)
+          })
+      }
+    }
   }
 
   loadSQL() {
-    this.setState({keys: [], values: [], valueAmount: 0, currentProjectId: false, SQLprojects: true});
+    this.setState({SQLprojects: true});
   }
 
   startNew(template) {
     var newId = uuidv4();
     var name = prompt("Enter a name: ")
 
-    var storage = window.localStorage;
-    var type = '/startsql'
-    if (template) {
-      type = '/loadtemplate'
+    if (name == "") {
+      alert("Please enter a name")
     }
-    storage.setItem(name, newId );
-    history.replaceState({}, name, "http://localhost:3000/" + newId)
-    console.log("New database created with UUID: " + newId)
-    axios.post(type, {id: newId, template: template}, {}).then((res) => {
-      this.setState({currentProjectId: newId, creatingNew: false}, () => {
-        axios.post('/startsql', {id: this.state.currentProjectId}, {}).then((res) => {
-          this.setState({
-            tables: res.data.tables
-          });
-        })
-      });
-    })
+
+    if (name != "" && name != null) {
+      var storage = window.localStorage;
+      var type = '/startsql'
+      if (template) {
+        type = '/loadtemplate'
+      }
+      storage.setItem(name, newId );
+      history.replaceState({}, name, "http://localhost:3000/" + newId)
+      console.log("New database created with UUID: " + newId)
+      axios.post(type, {id: newId, template: template}, {}).then((res) => {
+        this.setState({currentProjectId: newId, creatingNew: false}, () => {
+          axios.post('/startsql', {id: this.state.currentProjectId}, {}).then((res) => {
+            this.setState({
+              tables: res.data.tables
+            });
+          })
+        });
+      })
+    }
   }
 }
