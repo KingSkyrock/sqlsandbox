@@ -1,4 +1,0 @@
-- SQL editor does not present horizontal scrollbar properly
-- support newlines in query
-- The following query does not report a syntax error:
-  SELECT physician.name, undergoes.procedure, trained_in.* FROM physician inner join undergoes on physician.employeeID = undergoes.physician outer left join trained_in on trained_in.treatment = undergoes.procedure and trained_in.physician = physician.employeeID where trained_in.physician = null;
