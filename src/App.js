@@ -131,7 +131,15 @@ export default class App extends React.Component {
               <h1 className="settings-header">Settings</h1>
               <label className="settings-label" htmlFor="autoUpdate">Auto select after modification</label>
               <input onChange={() => {
-                this.setState({autoUpdate: !this.state.autoUpdate})
+                this.setState({autoUpdate: !this.state.autoUpdate}, () => {
+                  var storage = window.localStorage;
+                  if (this.state.autoUpdate == true) {
+                    storage.setItem('autoUpdate', "true")
+                  } else {
+                    storage.setItem('autoUpdate', "false")
+                  }
+                });
+
               }} type="checkbox" id="autoUpdate" checked={this.state.autoUpdate} />
             </Modal>
           </div>
@@ -234,6 +242,14 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
+    var storage = window.localStorage;
+    if (storage.getItem('autoUpdate') == null) {
+      storage.setItem('autoUpdate', "true")
+      this.setState({autoUpdate: true})
+    } else {
+      this.setState({autoUpdate: JSON.parse(storage.getItem('autoUpdate').toLowerCase())})
+    }
+
     document.addEventListener("keydown", (evt)=>{this.keyShortcuts(evt)}, false);
     var regex = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i; //uuidv4
     if (regex.test(window.location.pathname.substring(1))) {
@@ -251,16 +267,22 @@ export default class App extends React.Component {
   }
 
   keyShortcuts(evt) {
-    if (evt.keyCode === 13 && !evt.shiftKey) {
+    if (evt.keyCode === 13 && evt.ctrlKey) {
       this.runSQL(this.state.sql);
     }
   }
 
   runSQL(code) {
     var codearray = code.split(";")
-    for (var i in codearray) {
-      if (codearray[i] != "" && codearray[i] != " ") {
-        axios.post('/runsql', {code: codearray[i], id: this.state.currentProjectId}, {})
+    for (var h = 0; h < codearray.length; h++) {
+      if (codearray[h] == "" || codearray[h] == " " || codearray[h] == "\n") {
+        codearray.splice(h, 1)
+      }
+    }
+    for (var h = 0; h < codearray.length; h++) {
+      console.log(codearray)
+      if (codearray[h] != undefined) {
+        axios.post('/runsql', {code: codearray[h], id: this.state.currentProjectId}, {})
           .then((res) => {
             if (res.data.rows.length > 0) {
               var keys = Object.keys(res.data.rows[0]);
@@ -295,13 +317,14 @@ export default class App extends React.Component {
               .catch((error) => {
                 alert(error)
               })
-              var ast = this.parser.astify(code);
+              var ast = this.parser.astify(codearray[codearray.length-1]);
               if (this.state.autoUpdate && ast.table && ast.table[0] && ast.table[0].table) {
                 this.runSQL("SELECT * FROM " + ast.table[0].table);
               }
             }
           })
           .catch((error) => {
+            console.log(error)
             alert(error.response.data.error.message)
           })
       }
