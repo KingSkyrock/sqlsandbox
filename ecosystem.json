@@ -1,7 +1,10 @@
 {
    "apps" : [{
       "name" : "sandboxsql",
-      "script" : "server/index.js"
+      "script" : "server/index.js",
+      "env": {
+        "PORT": 80,
+      },
    }],
    "deploy" : {
      // "production" is the environment name
