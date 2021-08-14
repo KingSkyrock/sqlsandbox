@@ -196,7 +196,7 @@ export default class App extends React.Component {
                         {Object.entries(window.localStorage).map((project) => {
                           return (
                             <SelectCell id={project[1]} name={project[0]} select={(name, id) => {
-                              history.replaceState({}, name, "http://localhost:3000/" + id)
+                              history.replaceState({}, name, "/" + id)
                               axios.post('/startsql', {id: id}, {}).then((res) => {
                                 this.setState({
                                   currentProjectId: id,
@@ -350,7 +350,7 @@ export default class App extends React.Component {
         type = '/loadtemplate'
       }
       storage.setItem(name, newId );
-      history.replaceState({}, name, "http://localhost:3000/" + newId)
+      history.replaceState({}, name, "/" + newId)
       console.log("New database created with UUID: " + newId)
       axios.post(type, {id: newId, template: template}, {}).then((res) => {
         this.setState({currentProjectId: newId, creatingNew: false}, () => {
