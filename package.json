@@ -1,7 +1,7 @@
 {
-  "name": "react-boilerplate",
+  "name": "sandboxsql",
   "version": "1.0.0",
-  "description": "boilerplate for react projects",
+  "description": "A sandbox to practice SQL commands on databases",
   "main": "index.js",
   "scripts": {
     "start": "node server/index.js",
@@ -20,7 +20,9 @@
     "codemirror": "^5.61.0",
     "express": "^4.17.1",
     "file-system": "^2.2.2",
+    "greenlock-express": "^4.0.3",
     "node-sql-parser": "^3.3.0",
+    "pm2": "^5.1.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-codemirror2": "^7.2.1",
