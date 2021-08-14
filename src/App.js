@@ -5,7 +5,6 @@ import ValuesDisplay from './ValuesDisplay.js'
 import './styles.scss';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-//import Parser from 'node-sql-parser';
 const { Parser } = require('node-sql-parser/build/mysql');
 import 'codemirror/theme/material-palenight.css';
 import 'codemirror/lib/codemirror.css';
@@ -194,21 +193,23 @@ export default class App extends React.Component {
                     <div className="projects-list">
                       <SimpleBar>
                         {Object.entries(window.localStorage).map((project) => {
-                          return (
-                            <SelectCell id={project[1]} name={project[0]} select={(name, id) => {
-                              history.replaceState({}, name, "/" + id)
-                              axios.post('/startsql', {id: id}, {}).then((res) => {
-                                this.setState({
-                                  currentProjectId: id,
-                                  SQLprojects: false,
-                                  tables: res.data.tables
-                                });
-                              })
-                              .catch((error) => {
-                                alert(error)
-                              })
-                            }}/>
-                          )
+                          if (project[0].startsWith("data-")) {
+                            return (
+                              <SelectCell id={project[1]} name={project[0].slice(5)} select={(name, id) => {
+                                history.replaceState({}, name, "/" + id)
+                                axios.post('/startsql', {id: id}, {}).then((res) => {
+                                  this.setState({
+                                    currentProjectId: id,
+                                    SQLprojects: false,
+                                    tables: res.data.tables
+                                  });
+                                })
+                                .catch((error) => {
+                                  alert(error)
+                                })
+                              }}/>
+                            )
+                          }
                         })}
                       </SimpleBar>
                     </div>
@@ -344,6 +345,7 @@ export default class App extends React.Component {
     }
 
     if (name != "" && name != null) {
+      name = "data-" + name
       var storage = window.localStorage;
       var type = '/startsql'
       if (template) {
