@@ -11,8 +11,16 @@
     "renewOffset": "-45d",
     "renewStagger": "3d",
     "accountKeyType": "EC-P256",
-    "serverKeyType": "RSA-2048",
-    "subscriberEmail": "lukewang74@gmail.com"
+    "serverKeyType": "RSA-2048"
   },
-  "sites": []
+  "sites": [
+    {
+      "subject": "sandboxsql.com",
+      "altnames": [
+        "sandboxsql.com",
+	"www.sandboxsql.com"
+      ],
+      "renewAt": 1
+    }
+  ]
 }
