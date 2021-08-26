@@ -147,6 +147,18 @@ app.post('/runsql', (req, res) => {
   })
 })
 
-app.listen(port, function () {
- console.log('App listening on port: ' + port);
-});
+if (process.env.NODE_ENV === "production") {
+  require("greenlock-express")
+      .init({
+          packageRoot: __dirname + "/..",
+          configDir: "./greenlock.d",
+          maintainerEmail: "koxaha7706@kembung.com",
+
+          cluster: false
+      })
+      .serve(app);
+} else {
+  app.listen(port, function () {
+    console.log('App listening on port: ' + port);
+  });
+}
