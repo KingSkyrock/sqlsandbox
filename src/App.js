@@ -70,6 +70,8 @@ export default class App extends React.Component {
     super(props);
 
     this.updateCheck = React.createRef();
+    this.fileInput = React.createRef();
+    this.fileA = React.createRef();
     this.parser = new Parser();
 
     this.state = {
@@ -85,6 +87,7 @@ export default class App extends React.Component {
       settingsOpen: false,
       dummy: 1,
       creatingNew: false,
+      exportedFile: null,
     };
     this.closeModals = this.closeModals.bind(this);
   }
@@ -110,15 +113,23 @@ export default class App extends React.Component {
           >
             <div>
               <div className="modal-title">New SQL Creation</div>
-              <div className="modal-subtitle">Create an empty database or use a template</div>
+              <div className="modal-subtitle">Create an empty database, load a.sqlite file or, use a template</div>
               <br />
               <button className="new-empty" onClick={() => this.startNew(false)}>New empty database</button>
+              <button className="new-template" onClick={() => this.fileInput.current.click()}>Upload file</button>
+              <input  onChange={() => this.uploadFile()} className="file-input" ref={this.fileInput} name="sqlupload" accept=".sqlite" type="file" />
               <button className="new-template" onClick={() => this.startNew(1)}>Northwind Template</button>
               <button className="new-template" onClick={() => this.startNew(2)}>Hospital Template</button>
               <button className="new-template2" onClick={() => this.startNew(3)}>Planet Express Template</button>
             </div>
           </Modal>
           <button className="load-sql" onClick={() => this.loadSQL()}>Load SQL</button>
+          {this.state.currentProjectId &&
+            <>
+              <button className="download-sql" onClick={() => this.fileA.current.click()}>Export Current SQL</button>
+              <a style={{ display: 'none' }} ref={this.fileA} href={this.state.currentProjectId + ".sqlite"} download="database.sqlite"></a>
+            </>
+          }
           <div onClick={() => this.setState({settingsOpen: true})} className="settings">
             <FontAwesomeIcon size="2x" className="icon" color="#d1d5e3" icon={faCog} />
             <Modal
@@ -334,6 +345,42 @@ export default class App extends React.Component {
 
   loadSQL() {
     this.setState({SQLprojects: true});
+  }
+
+  uploadFile() {
+    var newId = uuidv4();
+    var formData = new FormData();
+    var blob = this.fileInput.current.files[0].slice(0, this.fileInput.current.files[0].size, '.sqlite');
+    var newFile = new File([blob], newId + '.sqlite', { type: '.sqlite' });
+    formData.append("file", newFile);
+
+    var name = prompt("Enter a name: ", this.fileInput.current.value.split(/(\\|\/)/g).pop())
+
+    if (name == "") {
+      alert("Please enter a name")
+    }
+
+    if (name != "" && name != null) {
+      name = "data-" + name
+      var storage = window.localStorage;
+
+      storage.setItem(name, newId);
+      history.replaceState({}, name, "/" + newId)
+      console.log("New database created with UUID: " + newId)
+      axios.post('/uploadfile', formData, {}, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then((res) => {
+        this.setState({ currentProjectId: newId, creatingNew: false }, () => {
+          axios.post('/startsql', { id: this.state.currentProjectId }, {}).then((res) => {
+            this.setState({
+              tables: res.data.tables
+            });
+          })
+        });
+      })
+    }
   }
 
   startNew(template) {

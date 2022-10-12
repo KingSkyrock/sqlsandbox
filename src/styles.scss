@@ -54,7 +54,7 @@ tbody td {
 
 .main {
   display: grid;
-  grid-template-rows: 45px 1fr;
+  grid-template-rows: 55px 1fr;
   max-height: 100%;
 }
 
@@ -66,36 +66,69 @@ tbody td {
 
 .new-sql {
   height: 85%;
+  width: 7%;
   box-sizing: border-box;
-  padding: 7px;
+  padding: 13px;
   border: 0;
   margin-left: 0.5%;
   color: #ebedf0;
   border-radius: 5px;
   background-color: #6253de;
-  font-size: 11px;
+  font-size: 14px;
   cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
 }
 
 .load-sql {
   height: 85%;
+  width: 7%;
   box-sizing: border-box;
-  padding: 7px;
+  padding: 13px;
+  border: 0;
+  margin-left: 0.5%;
+  color: #ebedf0;
+  border-radius: 5px;
+  background-color: #28334F; 
+  font-size: 14px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+}
+
+.download-sql {
+  height: 85%;
+  width: 10%;
+  box-sizing: border-box;
+  padding: 13px;
   border: 0;
   margin-left: 0.5%;
   color: #ebedf0;
   border-radius: 5px;
   background-color: #28334F;
-  font-size: 11px;
+  font-size: 14px;
   cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
 }
 
 .load-sql:hover {
   background-color: #2C3754;
 }
 
+.download-sql:hover {
+  background-color: #2C3754;
+}
+
 .new-sql:hover {
   background-color: #7568e2;
+}
+
+.fa-2x {
+  font-size: 2.5em;
 }
 
 .projects-list {
@@ -157,6 +190,11 @@ tbody td {
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
   cursor: pointer;
+}
+
+.file-input {
+  color: red;
+  display: none;
 }
 
 .new-template {

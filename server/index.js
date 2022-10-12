@@ -4,18 +4,24 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 const DIST_DIR = path.join(__dirname, '../dist');
+const DATA_DIR = path.join(__dirname, '../data');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
 const fs = require('file-system');
+const formidable = require('formidable');
 
 app.use(express.static(DIST_DIR));
+
 app.get('/api', (req, res) => {
   res.send(mockResponse);
 });
+
 app.get('*', (req, res) => {
- res.sendFile(HTML_FILE);
+  res.sendFile(HTML_FILE);
 });
+
+app.use(express.static(DATA_DIR));
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -52,6 +58,52 @@ app.post('/startsql', (req, res) => {
   });
 })
 
+app.post('/uploadfile', (req, res) => {
+  var form = new formidable.IncomingForm();
+  form.maxFileSize = 1000000000;
+  var filename;
+  form.parse(req)
+    .on('fileBegin', (name, file) => {
+      console.log(file)
+      var dir = __dirname.split("\\");
+      dir.pop();
+      file.newFileName = filename = file.originalFilename
+      file.filepath = dir.join("\\") + '/data/' + file.originalFilename
+    }).on('aborted', (name, file) => {
+      res.statusCode = 422;
+      res.end();
+    }).on('error', (name, file) => {
+      res.statusCode = 500;
+      res.end();
+    }).on('end', (name, file) => {
+      var data = new sqlite3.Database('data/' + filename);
+ 
+      data.all("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%';", function (error, rows) {
+        console.log(data)
+        if (error) {
+          console.log(error)
+          res.status(422);
+          res.set('Content-Type', 'application/json');
+          res.send(JSON.stringify({
+            error: {
+              message: error.message,
+              errno: error.errno,
+              code: error.code
+            }
+          }));
+          res.end();
+        } else {
+          console.log(rows)
+          res.set('Content-Type', 'application/json');
+          res.send(JSON.stringify({
+            tables: rows
+          }));
+          res.end();
+        }
+      });
+    })
+});
+
 app.post('/loadtemplate', (req, res) => {
   console.log(req.body.id);
   var template = ""
@@ -64,7 +116,7 @@ app.post('/loadtemplate', (req, res) => {
   }
   fs.copyFile(template, `data/${req.body.id}.sqlite`, {
     done: function(err) {
-      data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
+      var data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
 
       data.all("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%';", function(error, rows) {
         console.log(data)
@@ -94,7 +146,7 @@ app.post('/loadtemplate', (req, res) => {
 })
 
 app.post('/getSchema', (req, res) => {
-  data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
+  var data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
   console.log(req.body.table)
 
   data.all("PRAGMA table_info(" + "'" + req.body.table + "'" + ")", function(error, rows) {
@@ -122,7 +174,7 @@ app.post('/getSchema', (req, res) => {
 
 app.post('/runsql', (req, res) => {
   console.log(req.body.code);
-  data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
+  var data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
 
   data.all(req.body.code, function(error, rows) {
     if (error) {
