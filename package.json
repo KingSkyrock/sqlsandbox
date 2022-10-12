@@ -29,8 +29,8 @@
     "react-codemirror2": "^7.2.1",
     "react-dom": "^17.0.2",
     "react-modal": "^3.14.2",
-    "simplebar-react": "^2.3.5",
-    "sqlite3": "^4.2.0",
+    "simplebar-react": "^2.4.3",
+    "sqlite3": "^5.1.2",
     "uuid": "^8.3.2",
     "uuidv4": "^6.2.8"
   },
