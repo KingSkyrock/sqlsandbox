@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --experimental-https",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "lint": "next lint"
   },
   "dependencies": {
@@ -20,6 +20,7 @@
     "eslint-config-next": "13.5.2",
     "file-system": "^2.2.2",
     "formidable": "^3.5.1",
+    "greenlock": "^4.0.4",
     "next": "^14.0.4",
     "node-sql-parser": "^4.17.0",
     "overlayscrollbars": "^2.4.6",
