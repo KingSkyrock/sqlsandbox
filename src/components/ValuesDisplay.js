@@ -1,7 +1,7 @@
+'use client'
+
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import './styles.scss';
 
 export default class ValuesDisplay extends React.Component {
   constructor(props) {
@@ -14,7 +14,7 @@ export default class ValuesDisplay extends React.Component {
 
   render() {
     return (
-      <div>
+      <>
         <table>
           <thead>
             <tr key={1}>
@@ -26,11 +26,10 @@ export default class ValuesDisplay extends React.Component {
           </tr>
           </thead>
           <tbody>
-            <div className="ghost">{this.counter = 0}</div>
             {
               this.props.values.map((values,i) =>(
                 <>
-                  {(this.counter % 2 == 0) &&
+                  {(i % 2 == 0) &&
                     <tr key={i+1}>
                      {
                        values.map((value,j)=>
@@ -39,7 +38,7 @@ export default class ValuesDisplay extends React.Component {
                      }
                     </tr>
                   }
-                  {(this.counter % 2 == 1) &&
+                  {(i % 2 == 1) &&
                     <tr key={i+1}>
                      {
                        values.map((value,j)=>
@@ -48,13 +47,12 @@ export default class ValuesDisplay extends React.Component {
                      }
                     </tr>
                   }
-                  <div className="ghost">{this.counter++}</div>
                 </>
               ))
            }
           </tbody>
         </table>
-      </div>
+      </>
     );
   }
 

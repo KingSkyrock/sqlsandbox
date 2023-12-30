@@ -1,7 +1,7 @@
+'use client'
+
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import './styles.scss';
 
 export default class SelectCell extends React.Component {
   constructor(props) {
@@ -30,6 +30,6 @@ export default class SelectCell extends React.Component {
 
 SelectCell.propTypes = {
   name: PropTypes.string.isRequired,
-  id: PropTypes.number,
+  id: PropTypes.string,
   select: PropTypes.func.isRequired
 };

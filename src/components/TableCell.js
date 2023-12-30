@@ -1,12 +1,12 @@
+'use client'
+
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import './styles.scss';
 import axios from 'axios';
 import { faKey, faChevronUp, faColumns } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default class SelectCell extends React.Component {
+export default class TableCell extends React.Component {
   constructor(props) {
     super(props);
 
@@ -48,7 +48,7 @@ export default class SelectCell extends React.Component {
   handleClick() {
     if (!this.props.open) {
       this.props.select(this.props.name);
-      axios.post('/getSchema', {table: this.props.name, id: this.props.id}, {})
+      axios.post('/api/getschema', {table: this.props.name, id: this.props.id}, {})
         .then((res) => {
           var arr = [];
           for (var i = 0; i < res.data.rows.length; i++) {
@@ -77,7 +77,7 @@ export default class SelectCell extends React.Component {
 
 }
 
-SelectCell.propTypes = {
+TableCell.propTypes = {
   name: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   open: PropTypes.bool.isRequired,
