@@ -175,9 +175,9 @@ app.prepare().then(() => {
         });
       });
   });
-})
+});
 
-if (process.env.NODE_ENV === "production") {
+if (false) { // process.env.NODE_ENV === "production") {
   require("greenlock-express")
       .init({
           packageRoot: __dirname,
