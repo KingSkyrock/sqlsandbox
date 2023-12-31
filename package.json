@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node server.js",
     "build": "next build",
-    "start": "NODE_ENV=production PORT=80 node server.js",
+    "start": "node server.js",
     "lint": "next lint"
   },
   "dependencies": {
@@ -18,9 +18,11 @@
     "axios": "^1.6.3",
     "eslint": "8.50.0",
     "eslint-config-next": "13.5.2",
+    "express": "^4.18.2",
     "file-system": "^2.2.2",
     "formidable": "^3.5.1",
     "greenlock": "^4.0.4",
+    "greenlock-express": "^4.0.3",
     "next": "^14.0.4",
     "node-sql-parser": "^4.17.0",
     "overlayscrollbars": "^2.4.6",
