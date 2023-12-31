@@ -177,16 +177,16 @@ app.prepare().then(() => {
   });
 });
 
-if (false) { // process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production") {
   require("greenlock-express")
-      .init({
-          packageRoot: __dirname,
-          configDir: "./greenlock.d",
-          maintainerEmail: "koxaha7706@kembung.com",
+    .init({
+        packageRoot: __dirname,
+        configDir: "./greenlock.d",
+        maintainerEmail: "koxaha7706@kembung.com",
 
-          cluster: false
-      })
-      .serve(server);
+        cluster: false
+    })
+    .serve(server);
 } else {
   server.listen(port, function () {
     console.log('App listening on port: ' + port);
