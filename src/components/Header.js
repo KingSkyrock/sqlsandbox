@@ -163,7 +163,7 @@ class Header extends React.Component {
         {this.props.projectId &&
           <>
             <button className="download-sql" onClick={() => this.fileA.current.click()}>Export Current SQL</button>
-            <a style={{ display: 'none' }} ref={this.fileA} href={"api/downloadfile/"+this.props.projectId} download="database.sqlite"></a>
+            <a style={{ display: 'none' }} ref={this.fileA} href={'data/' + this.props.projectId + '.sqlite'} download="database.sqlite"></a>
           </>
         }
         <div onClick={() => this.setState({settingsOpen: true})} className="settings">
