@@ -52,6 +52,7 @@ if (process.env.NODE_ENV === "production") {
         }
     },
   });
+  
   gl.manager.defaults({
     subscriberEmail: 'koxaha7706@kembung.com',
     agreeToTerms: true,
@@ -60,7 +61,8 @@ if (process.env.NODE_ENV === "production") {
         module: "acme-http-01-standalone",
       }
     }
-});
+  });
+
   gl.add({
     subject: 'sandboxsql.com',
     altnames: ['sandboxsql.com', 'www.sandboxsql.com']
