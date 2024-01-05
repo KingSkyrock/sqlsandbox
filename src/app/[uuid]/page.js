@@ -5,18 +5,20 @@ import TableCell from '@/components/TableCell';
 import ValuesDisplay from '@/components/ValuesDisplay';
 import Header from '@/components/Header';
 import axios from 'axios';
-const { Parser } = require('node-sql-parser/build/mysql');
+import { Parser } from 'node-sql-parser/build/mysql';
 import CodeMirror from '@uiw/react-codemirror';
 import { sql } from '@codemirror/lang-sql';
+import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import 'overlayscrollbars/overlayscrollbars.css';
-import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.parser = new Parser();
+    this.editor = React.createRef();
 
     this.state = {
       currentProjectId: null,
@@ -36,37 +38,42 @@ export default class App extends React.Component {
         <Header 
           projectId={this.state.currentProjectId}
         />
-        <div className="content-container">
-          <div className="content-area">
-            <OverlayScrollbarsComponent defer className="rows">
-              {this.state.keys &&
-                <ValuesDisplay keys={this.state.keys} values={this.state.values} valueAmount={this.state.valueAmount}  />
-              }
-            </OverlayScrollbarsComponent>
-            <div className="input-container">
-              {this.state.currentProjectId &&
-                <div className="input-container-again">
-                  <div>
-                    <button className="run" onClick={() => this.runSQL(this.state.sql)}>Run</button>
-
-                  </div>
-                    <div className="editor">
-                      <CodeMirror
-                        height="100%"
-                        value={this.state.sql}
-                        extensions={[sql()]}
-                        theme={tokyoNight}
-                        onChange={(value) => {
-                          this.setState({sql: value})
-                        }}
-                      />
+        <PanelGroup className="content-container" direction="horizontal">
+          <Panel defaultSize={80} minSize={20} className="content-area">
+            <PanelGroup direction="vertical">
+              <Panel defaultSize={80} minSize={20}>
+                <OverlayScrollbarsComponent defer className="rows">
+                  {this.state.keys &&
+                    <ValuesDisplay keys={this.state.keys} values={this.state.values} valueAmount={this.state.valueAmount}  />
+                  }
+                </OverlayScrollbarsComponent>
+              </Panel>
+              <PanelResizeHandle className="resize-handle-horizontal"/>
+              <Panel defaultSize={20} minSize={5} className="input-container">
+                {this.state.currentProjectId &&
+                  <div className="input-container-again">
+                    <div>
+                      <button className="run" onClick={() => this.runSQL(this.state.sql)}>Run</button>
                     </div>
-                </div>
-              }
-            </div>
-          </div>
-          <div className="tables-container">
-            <OverlayScrollbarsComponent defer className="tables">
+                      <div defer className="editor">
+                        <CodeMirror
+                          height="100%"
+                          value={this.state.sql}
+                          extensions={[sql()]}
+                          theme={tokyoNight}
+                          onChange={(value) => {
+                            this.setState({sql: value})
+                          }}
+                        />
+                      </div>
+                  </div>
+                }
+              </Panel>
+            </PanelGroup>
+          </Panel>
+          <PanelResizeHandle className="resize-handle-vertical"/>
+          <Panel className="tables-container" defaultSize={20} minSize={6}>
+            <OverlayScrollbarsComponent defer className="tables" options={{overflow: {x: 'hidden'}}}>
               <div className="tables-top" >Tables</div>
               {this.state.tables.map((table) => {
                 return (
@@ -82,8 +89,8 @@ export default class App extends React.Component {
                 )
               })}
             </OverlayScrollbarsComponent>
-          </div>
-        </div>
+          </Panel>
+        </PanelGroup>
       </div>
     );
   }
