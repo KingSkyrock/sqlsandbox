@@ -53,7 +53,7 @@ export default class App extends React.Component {
                 {this.state.currentProjectId &&
                   <div className="input-container-again">
                     <div>
-                      <button className="run" onClick={() => this.runSQL(this.state.sql)}>Run</button>
+                      <button className="run-button" onClick={() => this.runSQL(this.state.sql)}>Run</button>
                     </div>
                       <div defer className="editor">
                         <CodeMirror

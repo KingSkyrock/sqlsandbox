@@ -1,0 +1,22 @@
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track, ::-webkit-scrollbar-corner {
+  background: $primary;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.44);
+  border-radius: 100px;
+  border: 2px solid $primary;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 0, 0, 0.66);
+}

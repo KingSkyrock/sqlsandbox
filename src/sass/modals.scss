@@ -1,0 +1,161 @@
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  padding-top: 20px;
+  padding-left: 20px;
+  border: 0px;
+  border-radius: 25px;
+  height: 80%;
+  width: 40%;
+  min-width: 350px;
+  background-color: $primary;
+  z-index: 0;
+  box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.3);
+}
+
+.new-sql-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  padding-top: 35px;
+  padding-left: 45px;
+  padding-right: 45px;
+  border: 0px;
+  height: 70%;
+  width: 30%;
+  min-width: 350px;
+  border-radius: 25px;
+  background: $primary;
+  z-index: 0;
+  box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.3);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0,  0.3);
+}
+
+.modal-title {
+  color: $text;
+  font-weight: bold;
+  font-size: 30px;
+  width: 100%;
+  text-align: center;
+}
+
+.modal-subtitle {
+  color: $text;
+  font-size: 16px;
+  width: 100%;
+  text-align: center;
+}
+
+.projects-list {
+  overflow: scroll;
+  height: 79%;
+  width: 71%;
+  margin: auto;
+  margin-top: 4%;
+  background-color: $secondary;
+  border-radius: 5px;
+  padding: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.projects-list button {
+  font-size: 15px;
+  height: 49px;
+  padding: 15px;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-bottom: 1%;
+  width: 80%;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 0px;
+  background-color: $accent;
+  cursor: pointer;
+}
+
+.projects-list button:hover {
+  background-color: $accent2;
+}
+
+.new-empty {
+  font-size: 20px;
+  height: 15%;
+  padding: 9px;
+  margin-top: 3%;
+  margin-right: 15%;
+  margin-left: 15%;
+  width: 70%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: $secondary;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  cursor: pointer;
+}
+
+.file-input {
+  display: none;
+}
+
+.new-template {
+  font-size: 20px;
+  height: 15%;
+  padding: 9px;
+  margin-right: 15%;
+  margin-left: 15%;
+  width: 70%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 0;
+  background-color: $secondary;
+  cursor: pointer;
+}
+
+.new-template2 {
+  font-size: 20px;
+  height: 15%;
+  padding: 9px;
+  margin-right: 15%;
+  margin-left: 15%;
+  width: 70%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border-top: 0;
+  background-color: $secondary;
+  cursor: pointer;
+}
+
+
+.new-empty:hover {
+  background-color: $accent;
+}
+
+.new-template:hover {
+  background-color: $accent;
+}
+
+.new-template2:hover {
+  background-color: $accent;
+}

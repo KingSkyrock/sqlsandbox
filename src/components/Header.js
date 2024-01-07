@@ -118,17 +118,15 @@ class Header extends React.Component {
           overlayClassName="modal-overlay"
           contentLabel="New project modal"
         >
-          <div>
-            <div className="modal-title">New Database Creation</div>
-            <div className="modal-subtitle">Create an empty database, load a.sqlite file, or use a template</div>
-            <br />
-            <button className="new-empty" onClick={() => this.startNew(false)}>New empty database</button>
-            <button className="new-template" onClick={() => this.fileInput.current.click()}>Upload file</button>
-            <input  onChange={() => this.uploadFile()} className="file-input" ref={this.fileInput} name="sqlupload" accept=".sqlite" type="file" />
-            <button className="new-template" onClick={() => this.startNew(1)}>Northwind Template</button>
-            <button className="new-template" onClick={() => this.startNew(2)}>Hospital Template</button>
-            <button className="new-template2" onClick={() => this.startNew(3)}>Planet Express Template</button>
-          </div>
+          <div className="modal-title">New Database Creation</div>
+          <div className="modal-subtitle">Create an empty database, load a.sqlite file, or use a template</div>
+          <br />
+          <button className="new-empty" onClick={() => this.startNew(false)}>New empty database</button>
+          <button className="new-template" onClick={() => this.fileInput.current.click()}>Upload file</button>
+          <input  onChange={() => this.uploadFile()} className="file-input" ref={this.fileInput} name="sqlupload" accept=".sqlite" type="file" />
+          <button className="new-template" onClick={() => this.startNew(1)}>Northwind Template</button>
+          <button className="new-template" onClick={() => this.startNew(2)}>Hospital Template</button>
+          <button className="new-template2" onClick={() => this.startNew(3)}>Planet Express Template</button>
         </Modal>
         <button className="load-sql" onClick={() => {this.setState({loadSQLModal: true})}}>Load SQL</button>
         {this.state.loadSQLModal &&

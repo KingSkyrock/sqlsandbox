@@ -18,7 +18,7 @@ export default class TableCell extends React.Component {
   render() {
     return (
       <div>
-          <button className="tablecell" onClick={() => this.handleClick()}>
+          <button className="table-cell" onClick={() => this.handleClick()}>
           {this.props.open &&
             <div>
               <strong><span className="tablename" >{this.props.name}</span></strong>
