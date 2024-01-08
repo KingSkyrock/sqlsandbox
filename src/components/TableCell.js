@@ -18,28 +18,25 @@ export default class TableCell extends React.Component {
   render() {
     return (
       <div>
-          <button className="table-cell" onClick={() => this.handleClick()}>
           {this.props.open &&
-            <div>
-              <strong><span className="tablename" >{this.props.name}</span></strong>
-              <span className="chevron"> <FontAwesomeIcon size="xs" color="#f2f6ff" icon={faChevronUp} /> </span>
-            </div>
+            <button className="table-cell table-cell-active" onClick={() => this.handleClick()}>
+              <span className="chevron"> <FontAwesomeIcon rotation={180} size="xs" color="#f2f6ff" icon={faChevronUp} /> </span>
+              <strong><span>{this.props.name}</span></strong>
+            </button>
           }
           {!this.props.open &&
-            <div>
-              <span className="tablename">{this.props.name}</span>
-              <span className="chevron"> <FontAwesomeIcon rotation={180} size="xs" color="#f2f6ff" icon={faChevronUp}/> </span>
-            </div>
+            <button className="table-cell" onClick={() => this.handleClick()}>
+              <span className="chevron"> <FontAwesomeIcon rotation={90} size="xs" color="#f2f6ff" icon={faChevronUp}/> </span>
+              <span>{this.props.name}</span>
+            </button>
           }
-
-          </button>
-            <div>
+          <div>
             {this.props.open &&
               <div className="schema">
                 {this.state.schema}
               </div>
             }
-            </div>
+          </div>
       </div>
     );
   }

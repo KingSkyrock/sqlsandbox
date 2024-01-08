@@ -37,42 +37,10 @@ export default class App extends React.Component {
       <div className="main">
         <Header 
           projectId={this.state.currentProjectId}
+          run={() => {this.runSQL(this.state.sql)}}
         />
         <PanelGroup className="content-container" direction="horizontal">
-          <Panel defaultSize={80} minSize={20} className="content-area">
-            <PanelGroup direction="vertical">
-              <Panel defaultSize={80} minSize={20}>
-                <OverlayScrollbarsComponent defer className="rows">
-                  {this.state.keys &&
-                    <ValuesDisplay keys={this.state.keys} values={this.state.values} valueAmount={this.state.valueAmount}  />
-                  }
-                </OverlayScrollbarsComponent>
-              </Panel>
-              <PanelResizeHandle className="resize-handle-horizontal"/>
-              <Panel defaultSize={20} minSize={5} className="input-container">
-                {this.state.currentProjectId &&
-                  <div className="input-container-again">
-                    <div>
-                      <button className="run-button" onClick={() => this.runSQL(this.state.sql)}>Run</button>
-                    </div>
-                      <div defer className="editor">
-                        <CodeMirror
-                          height="100%"
-                          value={this.state.sql}
-                          extensions={[sql()]}
-                          theme={tokyoNight}
-                          onChange={(value) => {
-                            this.setState({sql: value})
-                          }}
-                        />
-                      </div>
-                  </div>
-                }
-              </Panel>
-            </PanelGroup>
-          </Panel>
-          <PanelResizeHandle className="resize-handle-vertical"/>
-          <Panel className="tables-container" defaultSize={20} minSize={6}>
+          <Panel className="tables-container" defaultSize={15} minSize={6}>
             <OverlayScrollbarsComponent defer className="tables" options={{overflow: {x: 'hidden'}}}>
               <div className="tables-top" >Tables</div>
               {this.state.tables.map((table) => {
@@ -89,6 +57,34 @@ export default class App extends React.Component {
                 )
               })}
             </OverlayScrollbarsComponent>
+          </Panel>
+          <PanelResizeHandle className="resize-handle-vertical"/>
+          <Panel defaultSize={80} minSize={20} className="content-area">
+            <PanelGroup direction="vertical">
+              <Panel defaultSize={80} minSize={20}>
+                <OverlayScrollbarsComponent defer className="rows">
+                  {this.state.keys &&
+                    <ValuesDisplay keys={this.state.keys} values={this.state.values} valueAmount={this.state.valueAmount}  />
+                  }
+                </OverlayScrollbarsComponent>
+              </Panel>
+              <PanelResizeHandle className="resize-handle-horizontal"/>
+              <Panel defaultSize={20} minSize={5} className="input-container">
+                {this.state.currentProjectId &&
+                  <div defer className="editor">
+                    <CodeMirror
+                      height="100%"
+                      value={this.state.sql}
+                      extensions={[sql()]}
+                      theme={tokyoNight}
+                      onChange={(value) => {
+                        this.setState({sql: value})
+                      }}
+                    />
+                  </div>
+                }
+              </Panel>
+            </PanelGroup>
           </Panel>
         </PanelGroup>
       </div>
@@ -117,6 +113,8 @@ export default class App extends React.Component {
 
   keyShortcuts(evt) {
     if (evt.keyCode === 13 && evt.ctrlKey) {
+      evt.stopPropagation();
+      evt.preventDefault();
       this.runSQL(this.state.sql);
     }
   }

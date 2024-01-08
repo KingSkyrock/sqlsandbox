@@ -110,7 +110,14 @@ class Header extends React.Component {
   render() {
     return (
       <div className="header">
-        <button className="new-sql" onClick={() => {this.setState({creatingNewModal: true})}}>New SQL</button>
+        {this.props.projectId ?
+          <>
+            <button className="primary-button" onClick={() => this.props.run()}>Run</button>
+            <button className="secondary-button" onClick={() => {this.setState({creatingNewModal: true})}}>New SQL</button>
+          </>
+          :
+          <button className="primary-button" onClick={() => {this.setState({creatingNewModal: true})}}>New SQL</button>
+        }
         <Modal
           isOpen={this.state.creatingNewModal}
           onRequestClose={this.closeModals}
@@ -128,7 +135,7 @@ class Header extends React.Component {
           <button className="new-template" onClick={() => this.startNew(2)}>Hospital Template</button>
           <button className="new-template2" onClick={() => this.startNew(3)}>Planet Express Template</button>
         </Modal>
-        <button className="load-sql" onClick={() => {this.setState({loadSQLModal: true})}}>Load SQL</button>
+        <button className="secondary-button" onClick={() => {this.setState({loadSQLModal: true})}}>Load SQL</button>
         {this.state.loadSQLModal &&
           <Modal
           isOpen={this.state.loadSQLModal}
@@ -139,28 +146,28 @@ class Header extends React.Component {
         >
           <div className="modal-title">Load a Database</div>
           <div className="modal-subtitle">Select an existing project to load.</div>
-            <OverlayScrollbarsComponent defer className="projects-list">
-                {Object.entries(window.localStorage).map((project) => {
-                  if (project[0].startsWith("data-")) {
-                    return (
-                      <SelectCell key={project[1]} id={project[1]} name={project[0].slice(5)} select={(name, id) => {
-                        axios.post('/api/startsql', {id: id}, {}).then((res) => {
-                          this.props.router.push("/" + id);
-                        })
-                        .catch((error) => {
-                          alert(error)
-                        })
-                        
-                      }}/>
-                    )
-                  }
-                })}
-            </OverlayScrollbarsComponent>
+          <OverlayScrollbarsComponent defer className="projects-list">
+              {Object.entries(window.localStorage).map((project) => {
+                if (project[0].startsWith("data-")) {
+                  return (
+                    <SelectCell key={project[1]} id={project[1]} name={project[0].slice(5)} select={(name, id) => {
+                      axios.post('/api/startsql', {id: id}, {}).then((res) => {
+                        this.props.router.push("/" + id);
+                      })
+                      .catch((error) => {
+                        alert(error)
+                      })
+                      
+                    }}/>
+                  )
+                }
+              })}
+          </OverlayScrollbarsComponent>
         </Modal>
         }
         {this.props.projectId &&
           <>
-            <button className="download-sql" onClick={() => this.fileA.current.click()}>Export Current SQL</button>
+            <button className="secondary-button" onClick={() => this.fileA.current.click()}>Export Current SQL</button>
             <a style={{ display: 'none' }} ref={this.fileA} href={'data/' + this.props.projectId + '.sqlite'} download="database.sqlite"></a>
           </>
         }
@@ -194,4 +201,5 @@ class Header extends React.Component {
 
 Header.propTypes = {
   projectId: PropTypes.string,
+  run: PropTypes.func,
 };

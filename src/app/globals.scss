@@ -48,6 +48,7 @@ thead th {
   position: sticky;
   top: 0px;
   background-color: $primary;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 tbody td {
@@ -61,21 +62,35 @@ tbody td {
   background-color: $primary;
 }
 
+.value-row1, .value-row2 {
+  white-space: nowrap;
+  max-width: 200px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    white-space: normal;
+    overflow-wrap: break-word;
+    transition-delay:1s;
+  }
+}
+
 .header {
   background-color: $background;
   box-sizing: border-box;
-  padding-top: 6px;
   color: $text;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
 }
 
-.new-sql {
-  height: 85%;
-  width: 7%;
+.primary-button {
   box-sizing: border-box;
+  min-width: 100px;
   padding: 13px;
   border: 0;
   margin-left: 0.5%;
+  margin-right: 0.25%;
   border-radius: 5px;
   background-color: $accent;
   font-size: 14px;
@@ -84,15 +99,23 @@ tbody td {
   white-space: nowrap;
   text-overflow: clip;
   color: $text-highlight; 
+
+  &:hover {
+    background-color: $accent2;
+  }
+
+  &:active {
+    background-color: $accent;
+  }
 }
 
-.load-sql {
-  height: 85%;
-  width: 7%;
+.secondary-button {
   box-sizing: border-box;
+  min-width: 100px;
   padding: 13px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-left: 0.5%;
+  margin-left: 0.25%;
+  margin-right: 0.25%;
   border-radius: 5px;
   background-color: $background; 
   font-size: 14px;
@@ -100,48 +123,25 @@ tbody td {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: clip;
-}
 
-.download-sql {
-  height: 85%;
-  width: 10%;
-  box-sizing: border-box;
-  padding: 13px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-left: 0.5%;
-  border-radius: 5px;
-  background-color: $background;
-  font-size: 14px;
-  cursor: pointer;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: clip;
-}
+  &:hover {
+    background-color: $primary;
+  }
 
-.load-sql:hover {
-  background-color: $primary;
-}
-
-.download-sql:hover {
-  background-color: $primary;
-}
-
-.new-sql:hover {
-  background-color: $accent2;
-}
-
-.fa-2x {
-  font-size: 2.5em;
-}
+  &:active {
+    background-color: $background;
+  }
+} 
 
 .settings {
-  float: right;
-  margin-right: 0.5%;
+  margin-left: auto;
+  margin-right: 15px;
   cursor: pointer;
-}
+  transition: transform .25s ease-in-out;
 
-.svg-inline--fa.fa-w-16 {
-  width: 0.65em;
+  &:hover {
+    transform: rotate(60deg);
+  }
 }
 
 .title {
@@ -187,35 +187,12 @@ tbody td {
   font-size: 20px;
 }
 
-.input-container-again {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-columns: 70px 1fr;
-}
-
 .input {
   width: 100%;
   height: 100%;
   resize: none;
   box-sizing: border-box;
   border: 0px;
-}
-
-.run-button {
-  height: 100%;
-  width: 100%;
-  border: 0px;
-  box-sizing: border-box;
-  padding: 10px;
-  border: 0;
-  margin-left: 0.5%;
-  background-color: $accent;
-  cursor: pointer;
-}
-
-.run-button:hover {
-  background-color: $accent2;
 }
 
 .tables {
@@ -226,28 +203,6 @@ tbody td {
   padding-bottom: 10px;
   box-sizing: border-box;
   background-color: $primary;
-}
-
-.tablename {
-  position: relative;
-}
-
-.tablename:before {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 1.5px;
-  bottom: 0;
-  left: 0;
-  background-color: $accent;
-  visibility: hidden;
-  transform: scaleX(0);
-  transition: all 0.15s ease-in-out;
-}
-
-.tablename:hover:before {
-  visibility: visible;
-  transform: scaleX(1.1);
 }
 
 .tables-top {
@@ -261,31 +216,31 @@ tbody td {
 .table-cell {
   width: 100%;
   margin: 0;
-  margin-bottom: 5px;
   border: 0;
   padding: 12px;
-  padding-left: 20px;
+  padding-bottom: 17px;
   font-size: 13px;
   background-color: transparent;
   text-align: left;
   cursor: pointer;
+
+  &:hover {
+    background-color: $primary2;
+  }
+}
+
+.table-cell-active {
+  background-color: $primary2;
 }
 
 .schema {
-  background-color: $secondary;
-  width: 90%;
+  background-color: $primary2;
+  width: 100%;
   padding-right: 20px;
   padding-left: 20px;
-  padding-bottom: 12px;
-  padding-top: 12px;
+  padding-bottom: 20px;
   font-size: 12.5px;
   box-sizing: border-box;
-  margin-left: 5%;
-  border-radius: 10px;
-}
-
-.icon {
-  margin-right: 5px;
 }
 
 .type-label {
@@ -298,7 +253,8 @@ tbody td {
 }
 
 .chevron {
-  float: right;
+  float: left;
+  margin-right: 7px;
 }
 
 .content-container {
@@ -325,6 +281,16 @@ tbody td {
   transition: 0.5s background-color;
   width: 2px;
   cursor: col-resize !important;
+
+  &::before {
+    position: relative;
+    display: block;
+    content: '';
+    width: 10px;
+    height: 100%;
+    transform: translate(-50%, 0);
+    z-index: 100;
+  }
 }
 
 .resize-handle-horizontal {
@@ -332,25 +298,15 @@ tbody td {
   transition: 0.5s background-color;
   height: 2px;
   cursor: row-resize !important;
-}
 
-.resize-handle-horizontal::before {
-  position: relative;
-  display: block;
-  content: '';
-  height: 10px;
-  transform: translate(0%, -50%);
-  z-index: 100;
-}
-
-.resize-handle-vertical::before {
-  position: relative;
-  display: block;
-  content: '';
-  width: 10px;
-  height: 100%;
-  transform: translate(-50%, 0);
-  z-index: 100;
+  &::before {
+    position: relative;
+    display: block;
+    content: '';
+    height: 10px;
+    transform: translate(0%, -50%);
+    z-index: 100;
+  }
 }
 
 .resize-handle-vertical:hover, .resize-handle-horizontal:hover {
