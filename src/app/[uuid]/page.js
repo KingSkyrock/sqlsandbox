@@ -61,12 +61,16 @@ export default class App extends React.Component {
           <PanelResizeHandle className="resize-handle-vertical"/>
           <Panel defaultSize={80} minSize={20} className="content-area">
             <PanelGroup direction="vertical">
-              <Panel defaultSize={80} minSize={20}>
+              <Panel defaultSize={70} minSize={20}>
                 <OverlayScrollbarsComponent defer className="rows">
                   {this.state.keys &&
                     <ValuesDisplay keys={this.state.keys} values={this.state.values} valueAmount={this.state.valueAmount}  />
                   }
                 </OverlayScrollbarsComponent>
+              </Panel>
+              <PanelResizeHandle className="resize-handle-horizontal"/>
+              <Panel defaultSize={10} minSize={5} className="input-container">
+                  eee
               </Panel>
               <PanelResizeHandle className="resize-handle-horizontal"/>
               <Panel defaultSize={20} minSize={5} className="input-container">

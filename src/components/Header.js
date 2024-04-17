@@ -3,6 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SelectCell from '@/components/SelectCell';
+import HeaderLogo from '@/components/HeaderLogo';
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { v4 as uuidv4 } from 'uuid';
@@ -110,6 +111,10 @@ class Header extends React.Component {
   render() {
     return (
       <div className="header">
+        <div onClick={() => {this.props.router.push("/")}} className="header-logo-container">
+          <HeaderLogo />
+        </div>
+        <div className="header-wall"></div>
         {this.props.projectId ?
           <>
             <button className="primary-button" onClick={() => this.props.run()}>Run</button>

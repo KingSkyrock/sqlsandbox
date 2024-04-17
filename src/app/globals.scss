@@ -1,6 +1,7 @@
 @use '../sass/colors.scss' as *;
 @import '../sass/modals.scss';
 @import '../sass/scrollbars.scss';
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap');
 
 * {
   font-family: 'Inter', sans-serif;
@@ -74,7 +75,6 @@ tbody td {
     transition-delay:1s;
   }
 }
-
 .header {
   background-color: $background;
   box-sizing: border-box;
@@ -84,12 +84,53 @@ tbody td {
   align-items: center;
 }
 
+.header-logo-container {
+  box-sizing: border-box;
+  border: 0;
+  margin-left: 0.6%;
+  margin-right: 0.25%;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  cursor: pointer;
+}
+
+.header-logo {
+  box-sizing: border-box;
+  border: 0;
+  height: 60%;
+  width: 30%;
+}
+
+.header-text {
+  box-sizing: border-box;
+  padding-top: 13px;
+  padding-left: 4px;
+  padding-bottom: 17px;
+  border: 0;
+  margin-right: 0.25%;
+  font-size: x-large;
+  font-family: "Quicksand", sans-serif;
+  overflow: hidden;
+  width: 100%;
+  -webkit-user-select: none;
+  -ms-user-select: none; 
+  user-select: none;
+}
+
+.header-wall {
+  background-color: rgba(255, 255, 255, 0.1);
+  width: 1px;
+  height: 50%;
+  margin-left: 0.6%;
+  margin-right: 1%;
+}
+
 .primary-button {
   box-sizing: border-box;
   min-width: 100px;
   padding: 13px;
   border: 0;
-  margin-left: 0.5%;
   margin-right: 0.25%;
   border-radius: 5px;
   background-color: $accent;
