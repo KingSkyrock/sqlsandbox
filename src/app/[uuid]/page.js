@@ -12,6 +12,7 @@ import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import 'overlayscrollbars/overlayscrollbars.css';
+import ToolbarButton from '@/components/ToolbarButton';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -19,6 +20,7 @@ export default class App extends React.Component {
 
     this.parser = new Parser();
     this.editor = React.createRef();
+    this.toolbar = React.createRef();
 
     this.state = {
       currentProjectId: null,
@@ -28,6 +30,8 @@ export default class App extends React.Component {
       tables: [],
       openTable: null,
       sql: "SELECT * FROM",
+      currentToolbar: 1, 
+      error: "",
     };
     
   }
@@ -37,7 +41,6 @@ export default class App extends React.Component {
       <div className="main">
         <Header 
           projectId={this.state.currentProjectId}
-          run={() => {this.runSQL(this.state.sql)}}
         />
         <PanelGroup className="content-container" direction="horizontal">
           <Panel className="tables-container" defaultSize={15} minSize={6}>
@@ -61,7 +64,7 @@ export default class App extends React.Component {
           <PanelResizeHandle className="resize-handle-vertical"/>
           <Panel defaultSize={80} minSize={20} className="content-area">
             <PanelGroup direction="vertical">
-              <Panel defaultSize={70} minSize={20}>
+              <Panel defaultSize={59} minSize={20}>
                 <OverlayScrollbarsComponent defer className="rows">
                   {this.state.keys &&
                     <ValuesDisplay keys={this.state.keys} values={this.state.values} valueAmount={this.state.valueAmount}  />
@@ -69,8 +72,49 @@ export default class App extends React.Component {
                 </OverlayScrollbarsComponent>
               </Panel>
               <PanelResizeHandle className="resize-handle-horizontal"/>
-              <Panel defaultSize={10} minSize={5} className="input-container">
-                  eee
+              <Panel ref={this.toolbar} defaultSize={21} minSize={5} className="toolbar">
+                <div className="toolbar-buttons">
+                  <button className="toolbar-execute-button" onClick={() => this.runSQL(this.state.sql)}>Execute</button>
+                  <ToolbarButton 
+                    id={1}
+                    currentlySelected={this.state.currentToolbar}
+                    name="Info"
+                    select={(id) => this.handleToolbarSelect(id)}
+                  />
+                  <ToolbarButton 
+                    id={2}
+                    currentlySelected={this.state.currentToolbar}
+                    name="Error"
+                    select={(id) => this.handleToolbarSelect(id)}
+                  />
+                </div>
+                <div className="toolbar-body">
+                  {this.state.currentToolbar == 1 ?
+                    <>
+                      <div className="info-title">Welcome to SandboxSQL!</div>
+                      <div className="info-text">
+                        Start by typing in a SQLite query to the code editor below. <br/>
+                        Click execute button to run the query and the results will be displayed in the section above. <br/>
+                        You can resize sections to your liking by clicking and dragging on the borders. <br/>
+                      </div>
+                    </>
+                  : this.state.currentToolbar == 2 &&
+                    <>
+                      {this.state.error != "" ?
+                        <>
+                          <div>Error!</div>
+                          <div className="error-message">
+                            {this.state.error}
+                          </div>
+                        </>
+                        :
+                        <>
+                          Errors will appear here. Currently, there are no errors!
+                        </>
+                      }
+                    </>
+                  }
+                </div>
               </Panel>
               <PanelResizeHandle className="resize-handle-horizontal"/>
               <Panel defaultSize={20} minSize={5} className="input-container">
@@ -123,63 +167,74 @@ export default class App extends React.Component {
     }
   }
 
+  handleToolbarSelect(id) {
+    this.setState({currentToolbar: id});
+    if (this.toolbar.current.getSize() < 12) {
+      this.toolbar.current.resize(12);
+    }
+  }
+
   runSQL(code) {
-    var codearray = code.split(";")
-    for (var h = 0; h < codearray.length; h++) {
-      if (codearray[h] == "" || codearray[h] == " " || codearray[h] == "\n") {
-        codearray.splice(h, 1)
+    this.setState({error: ""}, () => {
+      var codearray = code.split(";")
+      for (var h = 0; h < codearray.length; h++) {
+        if (codearray[h] == "" || codearray[h] == " " || codearray[h] == "\n") {
+          codearray.splice(h, 1)
+        }
       }
-    }
-    for (var h = 0; h < codearray.length; h++) {
-      console.log(codearray)
-      if (codearray[h] != undefined) {
-        axios.post('/api/runsql', {code: codearray[h], id: this.state.currentProjectId}, {})
-          .then((res) => {
-            if (res.data.rows.length > 0) {
-              var keys = Object.keys(res.data.rows[0]);
-              var values = [];
-              var valuesData = []
-              var counter = 0;
-              var arr = []
-              for (var i = 0; i < res.data.rows.length; i++) {
-                for (var j = 0; j < Object.keys(res.data.rows[i]).length; j++) {
-                  values.push(res.data.rows[i][Object.keys(res.data.rows[i])[j]]);
+      for (var h = 0; h < codearray.length; h++) {
+        console.log(codearray)
+        if (codearray[h] != undefined) {
+          axios.post('/api/runsql', {code: codearray[h], id: this.state.currentProjectId}, {})
+            .then((res) => {
+              if (res.data.rows.length > 0) {
+                var keys = Object.keys(res.data.rows[0]);
+                var values = [];
+                var valuesData = []
+                var counter = 0;
+                var arr = []
+                for (var i = 0; i < res.data.rows.length; i++) {
+                  for (var j = 0; j < Object.keys(res.data.rows[i]).length; j++) {
+                    values.push(res.data.rows[i][Object.keys(res.data.rows[i])[j]]);
+                  }
+                }
+                for(var i = 0; i < values.length; i++) {
+                  counter += 1
+                  if (counter >= Object.keys(res.data.rows[0]).length) {
+                    arr.push(values[i])
+                    counter = 0;
+                    valuesData.push(arr);
+                    arr = []
+                  } else {
+                    arr.push(values[i])
+                  }
+                }
+                this.setState({keys: keys, values: valuesData, valueAmount: Object.keys(res.data.rows[0]).length});
+              } else {
+                this.setState({sql: ''});
+                axios.post('/api/startsql', {id: this.state.currentProjectId}, {}).then((res) => {
+                  this.setState({
+                    tables: res.data.tables
+                  });
+                })
+                .catch((error) => {
+                  alert(error)
+                })
+                var ast = this.parser.astify(codearray[codearray.length-1]);
+                if (window.localStorage.getItem('autoUpdate') == 'true' && ast.table && ast.table[0] && ast.table[0].table) {
+                  this.runSQL("SELECT * FROM " + ast.table[0].table);
                 }
               }
-              for(var i = 0; i < values.length; i++) {
-                counter += 1
-                if (counter >= Object.keys(res.data.rows[0]).length) {
-                  arr.push(values[i])
-                  counter = 0;
-                  valuesData.push(arr);
-                  arr = []
-                } else {
-                  arr.push(values[i])
-                }
-              }
-              this.setState({keys: keys, values: valuesData, valueAmount: Object.keys(res.data.rows[0]).length});
-            } else {
-              this.setState({sql: ''});
-              axios.post('/api/startsql', {id: this.state.currentProjectId}, {}).then((res) => {
-                this.setState({
-                  tables: res.data.tables
-                });
+            })
+            .catch((error) => {
+              console.log(error)
+              error.response && this.setState({error: error.response.data.error.message}, () => {
+                this.handleToolbarSelect(2);
               })
-              .catch((error) => {
-                alert(error)
-              })
-              var ast = this.parser.astify(codearray[codearray.length-1]);
-              if (window.localStorage.getItem('autoUpdate') == 'true' && ast.table && ast.table[0] && ast.table[0].table) {
-                this.runSQL("SELECT * FROM " + ast.table[0].table);
-              }
-            }
-          })
-          .catch((error) => {
-            console.log(error)
-            error.response && alert(error.response.data.error.message)
-          })
+            })
+        }
       }
-    }
+    })
   }
 }
 

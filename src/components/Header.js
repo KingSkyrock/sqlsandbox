@@ -116,10 +116,7 @@ class Header extends React.Component {
         </div>
         <div className="header-wall"></div>
         {this.props.projectId ?
-          <>
-            <button className="primary-button" onClick={() => this.props.run()}>Run</button>
-            <button className="secondary-button" onClick={() => {this.setState({creatingNewModal: true})}}>New SQL</button>
-          </>
+          <button className="secondary-button" onClick={() => {this.setState({creatingNewModal: true})}}>New SQL</button>
           :
           <button className="primary-button" onClick={() => {this.setState({creatingNewModal: true})}}>New SQL</button>
         }
@@ -206,5 +203,4 @@ class Header extends React.Component {
 
 Header.propTypes = {
   projectId: PropTypes.string,
-  run: PropTypes.func,
 };

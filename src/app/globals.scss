@@ -118,6 +118,18 @@ tbody td {
   user-select: none;
 }
 
+@media only screen and (max-width: 600px) {
+  .header-text {
+    visibility: hidden;
+    display: none;
+  }
+
+  .header-logo {
+    width: 100%;
+  }
+}
+
+
 .header-wall {
   background-color: rgba(255, 255, 255, 0.1);
   width: 1px;
@@ -206,6 +218,99 @@ tbody td {
   overflow: auto;
   height: 100%;
   box-sizing: border-box;
+}
+
+.toolbar {
+  width: 100%;
+  height: 100%;
+  background-color: $primary;
+}
+
+.toolbar-buttons {
+  margin: auto;
+  width: 97.5%;
+}
+
+.toolbar-body {
+  box-sizing: border-box;
+  margin: auto;
+  margin-top: 0px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  background-color: $primary2; 
+  width: 97.5%;
+  height: 100%;
+}
+
+.toolbar-button {
+  box-sizing: border-box;
+  min-width: 100px;
+  background-color: $primary; 
+  border-radius: 10px;
+  margin: 5px;
+  margin-bottom: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 4px;
+  padding-bottom: 6px;
+  padding-top: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+
+  &:hover {
+    background-color: $primary2;
+  }
+}
+
+.toolbar-button-selected {
+  box-sizing: border-box;
+  min-width: 100px;
+  background-color: $primary2; 
+  border-radius: 10px;
+  margin: 5px;
+  margin-bottom: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  padding: 4px;
+  padding-bottom: 6px;
+  padding-top: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+
+  &:hover {
+    background-color: $primary2;
+  }
+}
+
+.toolbar-execute-button {
+  box-sizing: border-box;
+  min-width: 100px;
+  background-color: $accent2; 
+  border-radius: 10px;
+  margin: 5px;
+  margin-left: 0;
+  border: 1px solid $accent;
+  padding: 4px;
+  padding-bottom: 6px;
+  padding-top: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+
+  &:hover {
+    background-color: $accent;
+  }
+
+  &:active {
+    background-color: $accent2;
+  }
 }
 
 .input-container {
@@ -353,4 +458,25 @@ tbody td {
 .resize-handle-vertical:hover, .resize-handle-horizontal:hover {
   background-color: $accent2;
   transition-delay: 0.2s;
+}
+
+.error-message {
+  color: red;
+  font-family:'Courier New', Courier, monospace;
+  margin-top: 5px;
+}
+
+.info-title {
+  margin:auto;
+  width: 50%;
+  text-align: center;
+  font-size: 35px;
+}
+
+.info-text {
+  margin:auto;
+  width: 50%;
+  margin-top: 5px;
+  text-align: center;
+  font-size: 15px;
 }
