@@ -30,7 +30,7 @@ class Header extends React.Component {
       creatingNewModal: false,
       loadSQLModal: false,
       settingsOpen: false,
-      autoUpdate: true,
+      autoClear: false,
       exportedFile: null,
     }
     this.closeModals = this.closeModals.bind(this);
@@ -101,10 +101,10 @@ class Header extends React.Component {
 
   componentDidMount() {
     var storage = window.localStorage;
-    if (storage.getItem('autoUpdate') == null) {
-      storage.setItem('autoUpdate', "true")
+    if (storage.getItem('autoClear') == null) {
+      storage.setItem('autoClear', "false")
     } else {
-      this.setState({autoUpdate: JSON.parse(storage.getItem('autoUpdate').toLowerCase())});
+      this.setState({autoClear: JSON.parse(storage.getItem('autoClear').toLowerCase())});
     }
   }
 
@@ -183,17 +183,17 @@ class Header extends React.Component {
             contentLabel="Settings Modal"
           >
             <h1 className="settings-header">Settings</h1>
-            <label className="settings-label" htmlFor="autoUpdate">Auto select after modification</label>
+            <label className="settings-label" htmlFor="autoClear">Clear input after successful execution</label>
             <input onChange={() => {
-              this.setState({autoUpdate: !this.state.autoUpdate}, () => {
+              this.setState({autoClear: !this.state.autoClear}, () => {
                 var storage = window.localStorage;
-                if (this.state.autoUpdate == true) {
-                  storage.setItem('autoUpdate', "true")
+                if (this.state.autoClear == true) {
+                  storage.setItem('autoClear', "true")
                 } else {
-                  storage.setItem('autoUpdate', "false")
+                  storage.setItem('autoClear', "false")
                 }
               });
-            }} type="checkbox" id="autoUpdate" checked={this.state.autoUpdate} />
+            }} type="checkbox" id="autoClear" checked={this.state.autoClear} />
           </Modal>
         </div>
       </div>

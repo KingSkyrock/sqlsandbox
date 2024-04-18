@@ -137,8 +137,32 @@ app.prepare().then(() => {
   server.post('/api/startsql', (req, res) => {
     var data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
 
-    data.all("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%';", function(error, rows) {
-      if (error) {
+    new Promise(function(resolve, reject) {
+      data.all("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%';", function(error, rows) {
+        if (error) {
+          return reject(error);
+        } else {
+          return resolve(rows);
+        }
+      });
+
+      setTimeout(function() {
+        return reject(408);
+      }, 5000)
+    }).then((result) => {
+      res.status(200).json({
+        tables: result
+      });
+      res.end();
+    }, (error) => {
+      if (error == 408) {
+        res.status(408).json({
+          error: {
+            message: "Time limit of 5 seconds exceeded.",
+          }
+        });
+        res.end();
+      } else {
         res.status(422).json({
           error: {
             message: error.message,
@@ -147,13 +171,8 @@ app.prepare().then(() => {
           }
         });
         res.end();
-      } else {
-        res.status(200).json({
-          tables: rows
-        });
-        res.end();
       }
-    });
+    })
   });
 
   server.post('/api/uploadfile', (req, res) => {

@@ -33,6 +33,7 @@ export default class App extends React.Component {
       sql: "SELECT * FROM",
       currentToolbar: 1, 
       error: "",
+      ranSuccessfully: false,
     };
     
   }
@@ -75,7 +76,13 @@ export default class App extends React.Component {
               <PanelResizeHandle className="resize-handle-horizontal"/>
               <Panel ref={this.toolbar} defaultSize={21} minSize={5} className="toolbar">
                 <div className="toolbar-buttons">
-                  <button className="toolbar-execute-button" onClick={() => this.runSQL(this.state.sql)}>Execute</button>
+                  <button className="toolbar-execute-button" onClick={() => this.runSQL(this.state.sql)}>
+                    {this.state.ranSuccessfully ?
+                      <>Success!</>
+                    :
+                      <>Execute</>
+                    }
+                  </button>
                   <ToolbarButton 
                     id={1}
                     currentlySelected={this.state.currentToolbar}
@@ -142,8 +149,8 @@ export default class App extends React.Component {
 
   componentDidMount() {
     var storage = window.localStorage;
-    if (storage.getItem('autoUpdate') == null) {
-      storage.setItem('autoUpdate', "true")
+    if (storage.getItem('autoClear') == null) {
+      storage.setItem('autoClear', "false")
     }
     document.addEventListener("keydown", (evt)=>{this.keyShortcuts(evt)}, false);
     var regex = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i; //uuidv4
@@ -185,37 +192,16 @@ export default class App extends React.Component {
         }
       }
       for (var h = 0; h < codearray.length; h++) {
-        console.log(codearray)
         if (codearray[h] != undefined) {
           this.running = true;
           axios.post('/api/runsql', {code: codearray[h], id: this.state.currentProjectId}, {})
             .then((res) => {
-              if (res.data.rows.length > 0) {
-                var keys = Object.keys(res.data.rows[0]);
-                var values = [];
-                var valuesData = []
-                var counter = 0;
-                var arr = []
-                for (var i = 0; i < res.data.rows.length; i++) {
-                  for (var j = 0; j < Object.keys(res.data.rows[i]).length; j++) {
-                    values.push(res.data.rows[i][Object.keys(res.data.rows[i])[j]]);
-                  }
-                }
-                for(var i = 0; i < values.length; i++) {
-                  counter += 1
-                  if (counter >= Object.keys(res.data.rows[0]).length) {
-                    arr.push(values[i])
-                    counter = 0;
-                    valuesData.push(arr);
-                    arr = []
-                  } else {
-                    arr.push(values[i])
-                  }
-                }
-                this.running = false;
-                this.setState({keys: keys, values: valuesData, valueAmount: Object.keys(res.data.rows[0]).length});
-              } else {
-                this.setState({sql: ''});
+              var keys;
+              var valueAmount;
+              if (res.data.rows.length == 0) {
+                keys = [];
+                valueAmount = 0;
+                // If no rows, it could've been a modification to the table schema
                 axios.post('/api/startsql', {id: this.state.currentProjectId}, {}).then((res) => {
                   this.setState({
                     tables: res.data.tables
@@ -224,11 +210,43 @@ export default class App extends React.Component {
                 .catch((error) => {
                   alert(error)
                 })
-                var ast = this.parser.astify(codearray[codearray.length-1]);
-                if (window.localStorage.getItem('autoUpdate') == 'true' && ast.table && ast.table[0] && ast.table[0].table) {
-                  this.runSQL("SELECT * FROM " + ast.table[0].table);
+              } else {
+                keys = Object.keys(res.data.rows[0]);
+                valueAmount = Object.keys(res.data.rows[0]).length;
+              }
+              var values = [];
+              var valuesData = [];
+              var counter = 0;
+              var arr = [];
+              for (var i = 0; i < res.data.rows.length; i++) {
+                for (var j = 0; j < Object.keys(res.data.rows[i]).length; j++) {
+                  values.push(res.data.rows[i][Object.keys(res.data.rows[i])[j]]);
                 }
               }
+              for(var i = 0; i < values.length; i++) {
+                counter += 1
+                if (counter >= Object.keys(res.data.rows[0]).length) {
+                  arr.push(values[i])
+                  counter = 0;
+                  valuesData.push(arr);
+                  arr = []
+                } else {
+                  arr.push(values[i])
+                }
+              }
+              this.running = false;
+              this.setState(
+                {
+                  keys: keys, 
+                  values: valuesData, 
+                  valueAmount: valueAmount, 
+                  sql: window.localStorage.getItem('autoClear') == 'true' ? "" : this.state.sql,
+                  ranSuccessfully: true,
+                },
+                () => setTimeout(() => {
+                  this.setState({ranSuccessfully: false})
+                }, 1000)
+              );
             })
             .catch((error) => {
               this.running = false;
