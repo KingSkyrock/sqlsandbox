@@ -215,7 +215,7 @@ export default class App extends React.Component {
                 this.running = false;
                 this.setState({keys: keys, values: valuesData, valueAmount: Object.keys(res.data.rows[0]).length});
               } else {
-                this.setState({sql: '', running: false});
+                this.setState({sql: ''});
                 axios.post('/api/startsql', {id: this.state.currentProjectId}, {}).then((res) => {
                   this.setState({
                     tables: res.data.tables
@@ -233,7 +233,7 @@ export default class App extends React.Component {
             .catch((error) => {
               this.running = false;
               if (error.response && !error.response.data.error.message.includes("not an error")) {
-                this.setState({error: error.response.data.error.message, running: false}, () => {
+                this.setState({error: error.response.data.error.message}, () => {
                   this.handleToolbarSelect(2);
                 })
               }
