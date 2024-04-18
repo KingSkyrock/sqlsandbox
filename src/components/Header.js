@@ -116,9 +116,9 @@ class Header extends React.Component {
         </div>
         <div className="header-wall"></div>
         {this.props.projectId ?
-          <button className="secondary-button" onClick={() => {this.setState({creatingNewModal: true})}}>New SQL</button>
+          <button className="secondary-button" onClick={() => {this.setState({creatingNewModal: true})}}>New</button>
           :
-          <button className="primary-button" onClick={() => {this.setState({creatingNewModal: true})}}>New SQL</button>
+          <button className="primary-button" onClick={() => {this.setState({creatingNewModal: true})}}>New</button>
         }
         <Modal
           isOpen={this.state.creatingNewModal}
@@ -137,7 +137,7 @@ class Header extends React.Component {
           <button className="new-template" onClick={() => this.startNew(2)}>Hospital Template</button>
           <button className="new-template2" onClick={() => this.startNew(3)}>Planet Express Template</button>
         </Modal>
-        <button className="secondary-button" onClick={() => {this.setState({loadSQLModal: true})}}>Load SQL</button>
+        <button className="secondary-button" onClick={() => {this.setState({loadSQLModal: true})}}>Load</button>
         {this.state.loadSQLModal &&
           <Modal
           isOpen={this.state.loadSQLModal}
@@ -169,7 +169,7 @@ class Header extends React.Component {
         }
         {this.props.projectId &&
           <>
-            <button className="secondary-button" onClick={() => this.fileA.current.click()}>Export Current SQL</button>
+            <button className="secondary-button" onClick={() => this.fileA.current.click()}>Export</button>
             <a style={{ display: 'none' }} ref={this.fileA} href={'data/' + this.props.projectId + '.sqlite'} download="database.sqlite"></a>
           </>
         }

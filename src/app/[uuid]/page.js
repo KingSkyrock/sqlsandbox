@@ -21,6 +21,7 @@ export default class App extends React.Component {
     this.parser = new Parser();
     this.editor = React.createRef();
     this.toolbar = React.createRef();
+    this.running = false;
 
     this.state = {
       currentProjectId: null,
@@ -175,6 +176,7 @@ export default class App extends React.Component {
   }
 
   runSQL(code) {
+    !this.running &&
     this.setState({error: ""}, () => {
       var codearray = code.split(";")
       for (var h = 0; h < codearray.length; h++) {
@@ -185,6 +187,7 @@ export default class App extends React.Component {
       for (var h = 0; h < codearray.length; h++) {
         console.log(codearray)
         if (codearray[h] != undefined) {
+          this.running = true;
           axios.post('/api/runsql', {code: codearray[h], id: this.state.currentProjectId}, {})
             .then((res) => {
               if (res.data.rows.length > 0) {
@@ -209,9 +212,10 @@ export default class App extends React.Component {
                     arr.push(values[i])
                   }
                 }
+                this.running = false;
                 this.setState({keys: keys, values: valuesData, valueAmount: Object.keys(res.data.rows[0]).length});
               } else {
-                this.setState({sql: ''});
+                this.setState({sql: '', running: false});
                 axios.post('/api/startsql', {id: this.state.currentProjectId}, {}).then((res) => {
                   this.setState({
                     tables: res.data.tables
@@ -227,10 +231,12 @@ export default class App extends React.Component {
               }
             })
             .catch((error) => {
-              console.log(error)
-              error.response && this.setState({error: error.response.data.error.message}, () => {
-                this.handleToolbarSelect(2);
-              })
+              this.running = false;
+              if (error.response && !error.response.data.error.message.includes("not an error")) {
+                this.setState({error: error.response.data.error.message, running: false}, () => {
+                  this.handleToolbarSelect(2);
+                })
+              }
             })
         }
       }

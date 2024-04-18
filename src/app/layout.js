@@ -2,11 +2,11 @@ import './globals.scss'
 
 export const metadata = {
   title: 'Sandbox SQL',
-  description: 'Learn and play around with SQL! Sandbox SQL is a platform where you can write and execute SQLite queries online.',
+  description: 'Learn and play around with SQL! Sandbox SQL is a online SQL editor and compiler where you can write and execute SQLite queries online.',
 	openGraph: {
 		title: 'Sandbox SQL',
 		description:
-			'Learn and play around with SQL! Sandbox SQL is a platform where you can write and execute SQL queries online.',
+			'Learn and play around with SQL! Sandbox SQL is a online SQL editor and compiler where you can write and execute SQLite queries online.',
 		url: 'https://sandboxsql.com',
 		type: 'website',
 		images: [
