@@ -127,6 +127,26 @@ tbody td {
   .header-logo {
     width: 100%;
   }
+
+  .header-logo-container {
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+
+  .header-wall {
+    visibility: hidden;
+    display: none;
+  }
+
+  .primary-button {
+    min-width: 70px !important;
+    margin-left: 5px !important;
+  }
+
+  .secondary-button {
+    min-width: 70px !important;
+    margin-left: 5px !important;
+  }
 }
 
 
