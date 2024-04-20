@@ -223,14 +223,16 @@ tbody td {
   text-align: center;
   margin-top: 5%;
   font-size: 50px;
+  font-weight: 500;
 }
 
-.subtitle {
+.explanation {
   margin:auto;
   width: 50%;
-  text-align: center;
-  margin-top: 10px;
-  font-size: 25px;
+  text-align: left;
+  margin-top: 2%;
+  font-size: 20px;
+  max-width: 30%;
 }
 
 .rows {
