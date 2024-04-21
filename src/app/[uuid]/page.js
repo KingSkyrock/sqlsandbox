@@ -149,8 +149,8 @@ export default class App extends React.Component {
 
   componentDidMount() {
     var storage = window.localStorage;
-    if (storage.getItem('autoClear') == null) {
-      storage.setItem('autoClear', "false")
+    if (storage.getItem('darkTheme') == null) {
+      storage.setItem('darkTheme', "true")
     }
     document.addEventListener("keydown", (evt)=>{this.keyShortcuts(evt)}, false);
     var regex = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i; //uuidv4

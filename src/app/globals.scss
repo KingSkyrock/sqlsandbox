@@ -11,6 +11,12 @@
   }
 }
 
+html[theme='light'] {
+  @each $color, $value in $light {
+    --clr-#{$color}: #{$value};
+  }
+}
+
 * {
   font-family: 'Inter', sans-serif;
 }
