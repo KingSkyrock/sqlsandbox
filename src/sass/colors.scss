@@ -1,11 +1,19 @@
-//Dark
-$text: #d5d9e6;
-$text-secondary: #C0CAF5;
-$text-highlight: #ebedf0;
-$background: #15151e;
-$primary: #1b1c27;
-$primary2: #181923;
-$primary3: #1f202d;
-$accent: #483F60;
-$accent2: #5d4f7e;
+//dark
+$dark: (
+  text: #d5d9e6,
+  text-secondary: #C0CAF5,
+  text-highlight: #ebedf0,
+  background: #15151e,
+  primary: #1b1c27,
+  primary2: #181923,
+  primary3: #1f202d,
+  accent: #483F60,
+  accent2: #5d4f7e,
+);
+
+//light
+$light: (
+
+);
+
 

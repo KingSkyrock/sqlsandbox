@@ -13,7 +13,7 @@
   height: 80%;
   width: 40%;
   min-width: 350px;
-  background-color: $primary;
+  background-color: var(--clr-primary);
   z-index: 0;
   box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.3);
 }
@@ -34,7 +34,7 @@
   width: 30%;
   min-width: 350px;
   border-radius: 25px;
-  background: $primary;
+  background: var(--clr-primary);
   z-index: 0;
   box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.3);
 }
@@ -49,7 +49,7 @@
 }
 
 .modal-title {
-  color: $text;
+  color: var(--clr-text);
   font-weight: bold;
   font-size: 30px;
   width: 100%;
@@ -57,7 +57,7 @@
 }
 
 .modal-subtitle {
-  color: $text;
+  color: var(--clr-text);
   font-size: 16px;
   width: 100%;
   text-align: center;
@@ -69,7 +69,7 @@
   width: 71%;
   margin: auto;
   margin-top: 4%;
-  background-color: $primary3;
+  background-color: var(--clr-primary3);
   border-radius: 5px;
   padding: 10px;
   padding-top: 20px;
@@ -88,12 +88,12 @@
   box-sizing: border-box;
   border-radius: 5px;
   border: 0px;
-  background-color: $accent;
+  background-color: var(--clr-accent);
   cursor: pointer;
 }
 
 .projects-list button:hover {
-  background-color: $accent2;
+  background-color: var(--clr-accent2);
 }
 
 .new-empty {
@@ -105,7 +105,7 @@
   margin-left: 15%;
   width: 70%;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: $primary3;
+  background-color: var(--clr-primary3);
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
   cursor: pointer;
@@ -126,7 +126,7 @@
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   border-left: 1px solid rgba(255, 255, 255, 0.1);
   border-top: 0;
-  background-color: $primary3;
+  background-color: var(--clr-primary3);
   cursor: pointer;
 }
 
@@ -143,19 +143,19 @@
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
   border-top: 0;
-  background-color: $primary3;
+  background-color: var(--clr-primary3);
   cursor: pointer;
 }
 
 
 .new-empty:hover {
-  background-color: $accent;
+  background-color: var(--clr-accent);
 }
 
 .new-template:hover {
-  background-color: $accent;
+  background-color: var(--clr-accent);
 }
 
 .new-template2:hover {
-  background-color: $accent;
+  background-color: var(--clr-accen)t;
 }

@@ -3,6 +3,14 @@
 @import '../sass/scrollbars.scss';
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap');
 
+:root {
+  $active-theme: $dark;
+
+  @each $color, $value in $active-theme {
+    --clr-#{$color}: #{$value};
+  }
+}
+
 * {
   font-family: 'Inter', sans-serif;
 }
@@ -17,8 +25,8 @@ html, body, .main {
   margin: 0;
   box-sizing: border-box;
   scrollbar-width: none;
-  color: $text;
-  background-color: $background;
+  color: var(--clr-text);
+  background-color: var(--clr-background);
 }
 
 .main {
@@ -30,17 +38,17 @@ html, body, .main {
 .home-container {
   height: 100%;
   width: 100%;
-  background-color: $background;
+  background-color: var(--clr-background);
 }
 
 button {
-  color: $text;
+  color: var(--clr-text);
 }
 
 table {
   width: 100%;
   border-spacing: 0 0px;
-  color: $text;
+  color: var(--clr-text);
 }
 
 thead th {
@@ -48,7 +56,7 @@ thead th {
   text-align: left;
   position: sticky;
   top: 0px;
-  background-color: $primary;
+  background-color: var(--clr-primary);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -56,11 +64,11 @@ tbody td {
   padding: 15px;
   font-family: monospace;
   font-size: 15px;
-  color: $text-secondary;
+  color: var(--clr-text-secondary);
 }
 
 .value-row2 {
-  background-color: $primary;
+  background-color: var(--clr-primary);
 }
 
 .value-row1, .value-row2 {
@@ -76,9 +84,9 @@ tbody td {
   }
 }
 .header {
-  background-color: $background;
+  background-color: var(--clr-background);
   box-sizing: border-box;
-  color: $text;
+  color: var(--clr-text);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
@@ -165,20 +173,20 @@ tbody td {
   border: 0;
   margin-right: 0.25%;
   border-radius: 5px;
-  background-color: $accent;
+  background-color: var(--clr-accent);
   font-size: 14px;
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: clip;
-  color: $text-highlight; 
+  color: var(--clr-text-highlight); 
 
   &:hover {
-    background-color: $accent2;
+    background-color: var(--clr-accent2);
   }
 
   &:active {
-    background-color: $accent;
+    background-color: var(--clr-accent);
   }
 }
 
@@ -190,7 +198,7 @@ tbody td {
   margin-left: 0.25%;
   margin-right: 0.25%;
   border-radius: 5px;
-  background-color: $background; 
+  background-color: var(--clr-background); 
   font-size: 14px;
   cursor: pointer;
   overflow: hidden;
@@ -198,11 +206,11 @@ tbody td {
   text-overflow: clip;
 
   &:hover {
-    background-color: $primary;
+    background-color: var(--clr-primary);
   }
 
   &:active {
-    background-color: $background;
+    background-color: var(--clr-background);
   }
 } 
 
@@ -236,7 +244,7 @@ tbody td {
 }
 
 .rows {
-  background-color: $primary2;
+  background-color: var(--clr-primary2);
   overflow: auto;
   height: 100%;
   box-sizing: border-box;
@@ -245,7 +253,7 @@ tbody td {
 .toolbar {
   width: 100%;
   height: 100%;
-  background-color: $primary;
+  background-color: var(--clr-primary);
 }
 
 .toolbar-buttons {
@@ -260,7 +268,7 @@ tbody td {
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 15px;
-  background-color: $primary2; 
+  background-color: var(--clr-primary2); 
   width: 97.5%;
   height: 100%;
 }
@@ -268,7 +276,7 @@ tbody td {
 .toolbar-button {
   box-sizing: border-box;
   min-width: 100px;
-  background-color: $primary; 
+  background-color: var(--clr-primary); 
   border-radius: 10px;
   margin: 5px;
   margin-bottom: 6px;
@@ -283,14 +291,14 @@ tbody td {
   text-overflow: clip;
 
   &:hover {
-    background-color: $primary2;
+    background-color: var(--clr-primary2);
   }
 }
 
 .toolbar-button-selected {
   box-sizing: border-box;
   min-width: 100px;
-  background-color: $primary2; 
+  background-color: var(--clr-primary2); 
   border-radius: 10px;
   margin: 5px;
   margin-bottom: 6px;
@@ -305,18 +313,18 @@ tbody td {
   text-overflow: clip;
 
   &:hover {
-    background-color: $primary2;
+    background-color: var(--clr-primary2);
   }
 }
 
 .toolbar-execute-button {
   box-sizing: border-box;
   min-width: 100px;
-  background-color: $accent2; 
+  background-color: var(--clr-accent2); 
   border-radius: 10px;
   margin: 5px;
   margin-left: 0;
-  border: 1px solid $accent;
+  border: 1px solid var(--clr-accent);
   padding: 4px;
   padding-bottom: 6px;
   padding-top: 6px;
@@ -327,18 +335,18 @@ tbody td {
   text-overflow: clip;
 
   &:hover {
-    background-color: $accent;
+    background-color: var(--clr-accent);
   }
 
   &:active {
-    background-color: $accent2;
+    background-color: var(--clr-accent2);
   }
 }
 
 .input-container {
   width: 100%;
   height: 100%;
-  background-color: $background;
+  background-color: var(--clr-background);
 }
 
 .editor {
@@ -370,11 +378,11 @@ tbody td {
   overflow: auto;
   padding-bottom: 10px;
   box-sizing: border-box;
-  background-color: $primary;
+  background-color: var(--clr-primary);
 }
 
 .tables-top {
-  background-color: $background;
+  background-color: var(--clr-background);
   padding: 14px;
   padding-left: 20px;
   font-size: 14px;
@@ -393,16 +401,16 @@ tbody td {
   cursor: pointer;
 
   &:hover {
-    background-color: $primary2;
+    background-color: var(--clr-primary2);
   }
 }
 
 .table-cell-active {
-  background-color: $primary2;
+  background-color: var(--clr-primary2);
 }
 
 .schema {
-  background-color: $primary2;
+  background-color: var(--clr-primary2);
   width: 100%;
   padding-right: 20px;
   padding-left: 20px;
@@ -413,7 +421,7 @@ tbody td {
 
 .type-label {
   font-size: 11.5px;
-  color: $text;
+  color: var(--clr-text);
 }
 
 .seperator {
@@ -478,7 +486,7 @@ tbody td {
 }
 
 .resize-handle-vertical:hover, .resize-handle-horizontal:hover {
-  background-color: $accent2;
+  background-color: var(--clr-accent2);
   transition-delay: 0.2s;
 }
 
