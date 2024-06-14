@@ -31,7 +31,6 @@ class Header extends React.Component {
       loadSQLModal: false,
       settingsOpen: false,
       autoClear: false,
-      darkTheme: true,
       exportedFile: null,
     }
     this.closeModals = this.closeModals.bind(this);
@@ -102,18 +101,10 @@ class Header extends React.Component {
 
   componentDidMount() {
     var storage = window.localStorage;
-    var html = document.querySelector('html');
     if (storage.getItem('autoClear') == null) {
       storage.setItem('autoClear', "false")
     } else {
       this.setState({autoClear: JSON.parse(storage.getItem('autoClear').toLowerCase())});
-    }
-    if (storage.getItem('darkTheme') == null) {
-      storage.setItem('darkTheme', "true")
-    } else {
-      this.setState({darkTheme: JSON.parse(storage.getItem('darkTheme').toLowerCase())}, () => {
-        html.setAttribute('theme', this.state.darkTheme ? "dark": "light");
-      });
     }
   }
 
@@ -194,10 +185,10 @@ class Header extends React.Component {
             <h1 className="settings-header">Settings</h1>
             <label className="settings-label" htmlFor="darkTheme">Use dark theme</label>
             <input onChange={() => {
-              this.setState({darkTheme: !this.state.darkTheme}, () => {
+              this.props.updateTheme(!this.props.theme, () => {
                 var storage = window.localStorage;
                 var html = document.querySelector('html');
-                if (this.state.darkTheme == true) {
+                if (this.props.theme == true) {
                   storage.setItem('darkTheme', "true")
                   html.setAttribute('theme', "dark");
                 } else {
@@ -205,7 +196,7 @@ class Header extends React.Component {
                   html.setAttribute('theme', "light");
                 }
               });
-            }} type="checkbox" id="autoClear" checked={this.state.darkTheme} />
+            }} type="checkbox" id="autoClear" checked={this.props.theme} />
             <br/><br/>
             <label className="settings-label" htmlFor="autoClear">Clear input after successful execution</label>
             <input onChange={() => {
@@ -227,4 +218,6 @@ class Header extends React.Component {
 
 Header.propTypes = {
   projectId: PropTypes.string,
+  updateTheme: PropTypes.func,
+  theme: PropTypes.bool,
 };

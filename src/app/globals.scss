@@ -63,7 +63,7 @@ thead th {
   position: sticky;
   top: 0px;
   background-color: var(--clr-primary);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--clr-border);
 }
 
 tbody td {
@@ -93,7 +93,7 @@ tbody td {
   background-color: var(--clr-background);
   box-sizing: border-box;
   color: var(--clr-text);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--clr-border);
   display: flex;
   align-items: center;
 }
@@ -165,7 +165,7 @@ tbody td {
 
 
 .header-wall {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--clr-border);
   width: 1px;
   height: 50%;
   margin-left: 0.6%;
@@ -200,7 +200,7 @@ tbody td {
   box-sizing: border-box;
   min-width: 90px;
   padding: 13px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--clr-border);
   margin-left: 0.25%;
   margin-right: 0.25%;
   border-radius: 5px;
@@ -272,7 +272,7 @@ tbody td {
   margin: auto;
   margin-top: 0px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--clr-border);
   padding: 15px;
   background-color: var(--clr-primary2); 
   width: 97.5%;
@@ -286,7 +286,7 @@ tbody td {
   border-radius: 10px;
   margin: 5px;
   margin-bottom: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--clr-border);
   padding: 4px;
   padding-bottom: 6px;
   padding-top: 6px;
@@ -308,7 +308,7 @@ tbody td {
   border-radius: 10px;
   margin: 5px;
   margin-bottom: 6px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--clr-border);
   padding: 4px;
   padding-bottom: 6px;
   padding-top: 6px;
@@ -459,7 +459,7 @@ tbody td {
 }
 
 .resize-handle-vertical {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--clr-border);
   transition: 0.5s background-color;
   width: 2px;
   cursor: col-resize !important;
@@ -476,7 +476,7 @@ tbody td {
 }
 
 .resize-handle-horizontal {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--clr-border);
   transition: 0.5s background-color;
   height: 2px;
   cursor: row-resize !important;

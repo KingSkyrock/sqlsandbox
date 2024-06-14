@@ -8,6 +8,7 @@ import axios from 'axios';
 import { Parser } from 'node-sql-parser/build/mysql';
 import CodeMirror from '@uiw/react-codemirror';
 import { sql } from '@codemirror/lang-sql';
+import { tokyoNightDay } from '@uiw/codemirror-theme-tokyo-night-day';
 import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
@@ -34,6 +35,7 @@ export default class App extends React.Component {
       currentToolbar: 1, 
       error: "",
       ranSuccessfully: false,
+      darkTheme: true,
     };
     
   }
@@ -43,6 +45,12 @@ export default class App extends React.Component {
       <div className="main">
         <Header 
           projectId={this.state.currentProjectId}
+          updateTheme={(isDark, callback) => {
+            this.setState({darkTheme: isDark}, () => {
+              callback();
+            });
+          }}
+          theme={this.state.darkTheme}
         />
         <PanelGroup className="content-container" direction="horizontal">
           <Panel className="tables-container" defaultSize={15} minSize={6}>
@@ -132,7 +140,7 @@ export default class App extends React.Component {
                       height="100%"
                       value={this.state.sql}
                       extensions={[sql()]}
-                      theme={tokyoNight}
+                      theme={this.state.darkTheme ? tokyoNight : tokyoNightDay}
                       onChange={(value) => {
                         this.setState({sql: value})
                       }}
@@ -149,8 +157,13 @@ export default class App extends React.Component {
 
   componentDidMount() {
     var storage = window.localStorage;
+    var html = document.querySelector('html');
     if (storage.getItem('darkTheme') == null) {
       storage.setItem('darkTheme', "true")
+    } else {
+      this.setState({darkTheme: JSON.parse(storage.getItem('darkTheme').toLowerCase())}, () => {
+        html.setAttribute('theme', this.state.darkTheme ? "dark": "light");
+      });
     }
     document.addEventListener("keydown", (evt)=>{this.keyShortcuts(evt)}, false);
     var regex = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i; //uuidv4

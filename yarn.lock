@@ -866,6 +866,13 @@
     "@replit/codemirror-lang-svelte" "^6.0.0"
     codemirror-lang-mermaid "^0.5.0"
 
+"@uiw/codemirror-theme-tokyo-night-day@^4.22.2":
+  version "4.22.2"
+  resolved "https://registry.npmjs.org/@uiw/codemirror-theme-tokyo-night-day/-/codemirror-theme-tokyo-night-day-4.22.2.tgz"
+  integrity sha512-bP48DXp+tmFhGoRVyBtntkZl2a7tNacHwE2fDgj/Le97pHfzxS/DQ3iHqcUq49I0ZefQnswCZEASfupApqucvQ==
+  dependencies:
+    "@uiw/codemirror-themes" "4.22.2"
+
 "@uiw/codemirror-theme-tokyo-night@^4.21.21":
   version "4.21.21"
   resolved "https://registry.npmjs.org/@uiw/codemirror-theme-tokyo-night/-/codemirror-theme-tokyo-night-4.21.21.tgz"
@@ -877,6 +884,15 @@
   version "4.21.21"
   resolved "https://registry.npmjs.org/@uiw/codemirror-themes/-/codemirror-themes-4.21.21.tgz"
   integrity sha512-ljVcMGdaxo75UaH+EqxJ+jLyMVVgeSfW2AKyT1VeLy+4SDpuqNQ7wq5XVxktsG6LH+OvgSFndWXgPANf4+gQcA==
+  dependencies:
+    "@codemirror/language" "^6.0.0"
+    "@codemirror/state" "^6.0.0"
+    "@codemirror/view" "^6.0.0"
+
+"@uiw/codemirror-themes@4.22.2":
+  version "4.22.2"
+  resolved "https://registry.npmjs.org/@uiw/codemirror-themes/-/codemirror-themes-4.22.2.tgz"
+  integrity sha512-gsLHn6SUuV5iboBvGrM7YimzLFHQmsNlkGIYs3UaVUJTo/A/ZrKoSJNyPziShLRjBXA2UwKdBTIU6VhHyyaChw==
   dependencies:
     "@codemirror/language" "^6.0.0"
     "@codemirror/state" "^6.0.0"

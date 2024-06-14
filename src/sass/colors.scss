@@ -9,19 +9,21 @@ $dark: (
   primary3: #1f202d,
   accent: #483F60,
   accent2: #5d4f7e,
+  border: rgba(255, 255, 255, 0.1),
 );
 
 //light
 $light: (
-  text: #0c0d0e,
-  text-secondary: #18191f,
-  text-highlight: #070707,
-  background: #d8dbff,
-  primary: #dde0fa,
-  primary2: #e3e5ff,
-  primary3: #e9eafc,
-  accent: #b6a5e6,
-  accent2: #c7b8eb,
+  text: #333333,
+  text-secondary: #555555,
+  text-highlight: #000000,
+  background: #f0f0f0,
+  primary: #eeeff3,
+  primary2: #f9f9f9,
+  primary3: #e0e0e0,
+  accent: #52A6C4,
+  accent2: #99C6D5,
+  border: rgba(0, 0, 0, 0.1),
 );
 
 
