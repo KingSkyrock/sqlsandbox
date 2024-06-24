@@ -12,6 +12,7 @@ import axios from 'axios';
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import 'overlayscrollbars/overlayscrollbars.css';
 import { useRouter } from "next/navigation";
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function HeaderWrapper (props) {
   const router = useRouter();
@@ -28,6 +29,7 @@ class Header extends React.Component {
 
     this.state = {
       creatingNewModal: false,
+      signinModal: false,
       loadSQLModal: false,
       settingsOpen: false,
       autoClear: false,
@@ -40,7 +42,7 @@ class Header extends React.Component {
     event.preventDefault();
     event.stopPropagation();
 
-    this.setState({settingsOpen: false, creatingNewModal: false, loadSQLModal: false});
+    this.setState({settingsOpen: false, creatingNewModal: false, signinModal: false, loadSQLModal: false});
   }
 
   startNew(template) {
@@ -108,6 +110,12 @@ class Header extends React.Component {
     }
   }
 
+  handleOauth(credentialResponse) {
+    axios.post('/api/google_oauth', credentialResponse, {}).then((res) => {
+      console.log(res)
+    })
+  }
+
   render() {
     return (
       <div className="header">
@@ -123,7 +131,7 @@ class Header extends React.Component {
         <Modal
           isOpen={this.state.creatingNewModal}
           onRequestClose={this.closeModals}
-          className="new-sql-modal"
+          className="modal new-sql-modal"
           overlayClassName="modal-overlay"
           contentLabel="New project modal"
         >
@@ -173,6 +181,25 @@ class Header extends React.Component {
             <a style={{ display: 'none' }} ref={this.fileA} href={'data/' + this.props.projectId + '.sqlite'} download="database.sqlite"></a>
           </>
         }
+        <button onClick={() => this.setState({signinModal: true})} className="secondary-button signin-button">Sign in</button>
+        <Modal
+          isOpen={this.state.signinModal}
+          onRequestClose={this.closeModals}
+          className="modal sign-in-modal"
+          overlayClassName="modal-overlay"
+          contentLabel="Sign In Modal"
+        >
+          <div className="modal-title">Sign in</div>
+          <div className="google-login-button">
+            <GoogleLogin
+            onSuccess={credentialResponse => this.handleOauth(credentialResponse)}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+          />
+          </div>
+          
+        </Modal>
         <div onClick={() => this.setState({settingsOpen: true})} className="settings">
           <FontAwesomeIcon size="2x" className="icon" color="#d1d5e3" icon={faCog} />
           <Modal

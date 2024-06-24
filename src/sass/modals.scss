@@ -19,21 +19,22 @@
 }
 
 .new-sql-modal {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  right: auto;
-  bottom: auto;
-  margin-right: -50%;
-  transform: translate(-50%, -50%);
   padding-top: 35px;
   padding-left: 45px;
   padding-right: 45px;
-  border: 0px;
   height: 70%;
   width: 30%;
-  min-width: 350px;
-  border-radius: 25px;
+  background: var(--clr-primary);
+  z-index: 0;
+  box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.3);
+}
+
+.sign-in-modal {
+  padding-top: 35px;
+  padding-left: 45px;
+  padding-right: 45px;
+  height: 50%;
+  width: 20%;
   background: var(--clr-primary);
   z-index: 0;
   box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.3);
@@ -158,4 +159,8 @@
 
 .new-template2:hover {
   background-color: var(--clr-accen)t;
+}
+
+.google-login-button {
+  margin-top: 5%;
 }
