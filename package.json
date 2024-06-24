@@ -27,6 +27,7 @@
     "formidable": "^3.5.1",
     "greenlock": "^4.0.4",
     "greenlock-express": "^4.0.3",
+    "jwt-decode": "^4.0.0",
     "next": "^14.0.4",
     "node-sql-parser": "^4.17.0",
     "openai": "^4.51.0",

@@ -112,7 +112,8 @@ class Header extends React.Component {
 
   handleOauth(credentialResponse) {
     axios.post('/api/google_oauth', credentialResponse, {}).then((res) => {
-      console.log(res)
+      this.setState({signinModal: false});
+      console.log(res);
     })
   }
 
@@ -194,7 +195,7 @@ class Header extends React.Component {
             <GoogleLogin
             onSuccess={credentialResponse => this.handleOauth(credentialResponse)}
             onError={() => {
-              console.log('Login Failed');
+              alert('Login Failed');
             }}
           />
           </div>

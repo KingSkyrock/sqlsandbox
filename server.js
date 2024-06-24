@@ -15,6 +15,20 @@ const port = process.env.PORT || 3000
 const app = next({ dev, hostname, port })
 const server = express();
 
+const accounts = new sqlite3.Database(`accounts.sqlite`);
+
+const { OpenAI } = require('openai');
+const openai = new OpenAI({ apiKey: fs.readFileSync("openai.key").toString() });
+
+async function main() {
+  assistant = await openai.beta.assistants.create({
+    name: "SQL Bot",
+    instructions: "You are a helpful assistant to assist people with fixing their SQLite queries and learning SQLite. Help write queries and teach.",
+    model: "gpt-4o"
+  });
+}
+main();
+
 server.use(bodyParser.urlencoded({
   extended: true
 }))
@@ -38,6 +52,51 @@ app.prepare().then(() => {
       res.end('internal server error')
     }
   });
+
+  server.post('/api/assistant', (req, res) => {
+    async function talk() {
+      const thread = await openai.beta.threads.create();
+      const message = await openai.beta.threads.messages.create(
+        thread.id,
+        {
+          role: "user",
+          content: "test message"
+        }
+      );
+      const run = openai.beta.threads.runs.stream(thread.id, {
+        assistant_id: assistant.id
+      })
+        .on('textCreated', (text) => process.stdout.write('\nassistant > '))
+        .on('textDelta', (textDelta, snapshot) => process.stdout.write(textDelta.value))
+        .on('toolCallCreated', (toolCall) => process.stdout.write(`\nassistant > ${toolCall.type}\n\n`))
+        .on('toolCallDelta', (toolCallDelta, snapshot) => {
+          if (toolCallDelta.type === 'code_interpreter') {
+            if (toolCallDelta.code_interpreter.input) {
+              process.stdout.write(toolCallDelta.code_interpreter.input);
+            }
+            if (toolCallDelta.code_interpreter.outputs) {
+              process.stdout.write("\noutput >\n");
+              toolCallDelta.code_interpreter.outputs.forEach(output => {
+                if (output.type === "logs") {
+                  process.stdout.write(`\n${output.logs}\n`);
+                }
+              });
+            }
+          }
+        });
+      res.status(200);
+      res.end();
+    }
+
+    if (assistant.id)
+      talk();
+    
+  });
+
+  server.post('/api/google_oauth', (req, res) => {
+    console.log(req.body)
+    res.end();
+  })
 
   server.post('/api/getschema', (req, res) => {
     var data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
