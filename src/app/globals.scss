@@ -52,6 +52,12 @@ code {
   max-height: 100%;
 }
 
+
+.disabled {
+  filter: brightness(65%);
+  cursor: not-allowed !important;
+}
+
 .home-container {
   height: 100%;
   width: 100%;

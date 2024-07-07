@@ -25,10 +25,14 @@
   }
 }
 
+.completed {
+  filter: opacity(35%);
+}
+
 .task-container {
   border: 1px solid var(--clr-border);
   border-radius: 10px;
-  width: 500px;
+  width: 600px;
   height: 400px;
   margin: auto;
   margin-top: 20px;

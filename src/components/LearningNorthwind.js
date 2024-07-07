@@ -6,26 +6,39 @@ export default class LearningNorthwind extends React.Component {
   constructor(props) {
     super(props);
 
-    this.max = 10;
+    this.max = 1;
 
     this.state = {
       progress: 0,
-      current: 0
+      current: 0,
+      tasks: [0,0]
     }
   };
 
   getTaskTop(title) {
     return (
       <div className="task-top">
-        <button onClick={() => this.handleChange(-1)}>
+        {this.state.current != 0 ?
+          <button onClick={() => this.handleChange(-1)}>
+            Prev
+          </button>
+        :
+        <button className="disabled">
           Prev
         </button>
+        }
         <div className="task-title">
           {title}
         </div>
-        <button onClick={() => this.handleChange(1)}>
+        {this.state.current != this.max ?
+          <button onClick={() => this.handleChange(1)}>
+            Next
+          </button>
+        :
+        <button className="disabled">
           Next
         </button>
+        }
       </div>
     )
   }
@@ -52,7 +65,7 @@ export default class LearningNorthwind extends React.Component {
     )
   }
 
-  getTask() {
+  getTaskContainer() {
     if (this.state.current == 0)
       return (
         <>
@@ -64,10 +77,16 @@ export default class LearningNorthwind extends React.Component {
           </div>
           <div className="task-try-it">Try it:</div>
           <div className="task">
-            <span className="task-number">1. </span> Select all columns from the Customer table.
+            <span className="task-number">{this.state.tasks[0] ? "✓" : "1. "}</span>
+            <span className={this.state.tasks[0] ? "completed" : ""}>
+              Select all columns from the Customer table.
+            </span>
           </div>
           <div className="task">
-            <span className="task-number">2. </span> In one {this.c("SELECT")} statement, select the first and last names of all employees.
+            <span className="task-number">{this.state.tasks[1] ? "✓" : "2. "}</span>
+            <span className={this.state.tasks[1] ? "completed" : ""}>
+              In one {this.c("SELECT")} statement, select the first and last names of all employees.
+            </span>
           </div>
         </>
       )
@@ -75,15 +94,6 @@ export default class LearningNorthwind extends React.Component {
       return (
         <>
           {this.getTaskTop("Simple Querying 2")}
-          <div className="task-tutorial">
-            In SQL, you can use the <code>SELECT</code> statement to query data from a table. The basic syntax of a select query is 
-          </div>
-          <div className="task">
-            <span className="task-number">1. </span> Select all columns from the Customer table.
-          </div>
-          <div className="task">
-            <span className="task-number">2. </span> Select all columns from the Customer table.
-          </div>
         </>
       )
     else
@@ -92,7 +102,7 @@ export default class LearningNorthwind extends React.Component {
 
   handleChange(increment) {
     let newValue = this.state.current + increment;
-    if (newValue >= 0 && newValue < this.max) {
+    if (newValue >= 0 && newValue <= this.max) {
       this.setState({current: newValue});
     }
   }
@@ -101,7 +111,7 @@ export default class LearningNorthwind extends React.Component {
     return (
       <>
         <div className="task-container">
-          {this.getTask()}
+          {this.getTaskContainer()}
         </div>
         <div className="padding-element" />
       </>

@@ -133,11 +133,6 @@
   cursor: pointer;
 }
 
-.disabled {
-  filter: brightness(65%);
-  cursor: not-allowed;
-}
-
 .tooltip {
   background-color: var(--clr-accent) !important;
   a {
