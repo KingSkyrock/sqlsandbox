@@ -18,6 +18,13 @@ const app = next({ dev, hostname, port })
 const server = express();
 
 const accounts = new sqlite3.Database(`accounts.sqlite`);
+accounts.all("CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, learning_progress TEXT);", function(error, rows) {
+  if (error) {
+    console.log(error)
+  }
+});
+
+const learning_tasks = [[0,0]]
 
 const { OpenAI } = require('openai');
 const openai = new OpenAI({ apiKey: fs.readFileSync("openai.key").toString() });
@@ -29,7 +36,7 @@ async function main() {
     model: "gpt-4o"
   });
 }
-main();
+//main();
 
 server.use(bodyParser.urlencoded({
   extended: true
@@ -105,10 +112,20 @@ app.prepare().then(() => {
     var cred = jwtDecode(req.body.credential);
     if (googleJWTValid(cred)) {
       res.cookie('token', req.body.credential, {httpOnly: true});
-      res.status(200).json({
-        email: cred.email
+      accounts.all(`INSERT INTO accounts(email,learning_progress) VALUES ("${cred.email}", "${JSON.stringify(learning_tasks)}")`, function(error, rows) {
+        if (error) {
+          res.status(401).json({
+            error: {
+              message: "Login failed"
+            }
+          });
+        } else {
+          res.status(200).json({
+            email: cred.email
+          });
+        }
+        res.end();
       });
-      res.end();
     } else {
       res.status(401).json({
         error: {
@@ -183,6 +200,22 @@ app.prepare().then(() => {
   });
 
   server.post('/api/runsql', (req, res) => {
+    if (req.body.id.endsWith("-l")) {
+      var cred = jwtDecode(req.cookies.token);
+      var loggedIn = googleJWTValid(cred);
+      if (!loggedIn) {
+        res.status(401).json({
+          error: {
+            message: "You must sign in before using the learning template."
+          }
+        });
+        res.end();
+        return;
+      } else {
+        var accounts = new sqlite3.Database("accounts.sqlite");
+      }
+    }
+
     var data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
 
     new Promise(function(resolve, reject) {
