@@ -4,6 +4,7 @@ import React from 'react';
 import TableCell from '@/components/TableCell';
 import ValuesDisplay from '@/components/ValuesDisplay';
 import Header from '@/components/Header';
+import LearningNorthwind from '@/components/LearningNorthwind';
 import axios from 'axios';
 import { Parser } from 'node-sql-parser/build/mysql';
 import CodeMirror from '@uiw/react-codemirror';
@@ -36,8 +37,8 @@ export default class App extends React.Component {
       error: "",
       ranSuccessfully: false,
       darkTheme: true,
-    };
-    
+      loggedIn: false,
+    }; 
   }
 
   render() {
@@ -45,8 +46,14 @@ export default class App extends React.Component {
       <div className="main">
         <Header 
           projectId={this.state.currentProjectId}
-          updateTheme={(isDark, callback) => {
+          loggedIn={this.state.loggedIn}
+          updateTheme={(isDark, callback=Function()) => {
             this.setState({darkTheme: isDark}, () => {
+              callback();
+            });
+          }}
+          updateLoggedIn={(isLoggedIn, callback=Function()) => {
+            this.setState({loggedIn: isLoggedIn}, () => {
               callback();
             });
           }}
@@ -103,8 +110,16 @@ export default class App extends React.Component {
                     name="Error"
                     select={(id) => this.handleToolbarSelect(id)}
                   />
+                  {this.props.params.uuid.endsWith("-l") &&
+                    <ToolbarButton 
+                      id={3}
+                      currentlySelected={this.state.currentToolbar}
+                      name="Learn"
+                      select={(id) => this.handleToolbarSelect(id)}
+                    />
+                  }
                 </div>
-                <div className="toolbar-body">
+                <OverlayScrollbarsComponent defer className="toolbar-body">
                   {this.state.currentToolbar == 1 ?
                     <>
                       <div className="info-title">Welcome to SandboxSQL!</div>
@@ -112,9 +127,12 @@ export default class App extends React.Component {
                         Start by typing in a SQLite query to the code editor below. <br/>
                         Click execute button to run the query and the results will be displayed in the section above. <br/>
                         You can resize sections to your liking by clicking and dragging on the borders. <br/>
+                        {this.props.params.uuid.endsWith("-l") &&
+                          <><br />Head over to the learn tab to start learning.</>
+                        }
                       </div>
                     </>
-                  : this.state.currentToolbar == 2 &&
+                  : this.state.currentToolbar == 2 ?
                     <>
                       {this.state.error != "" ?
                         <>
@@ -129,8 +147,28 @@ export default class App extends React.Component {
                         </>
                       }
                     </>
+                  : this.state.currentToolbar == 3 &&
+                    <>
+                      <div className="info-title">Learn</div>
+                      <div className="info-text">
+                        <div className="info-top-text">Use SandboxSQL to learn SQL with hands-on challenges and AI assistance.</div> 
+                        {this.state.loggedIn ?
+                          <>
+                            Welcome! Now you can start learning the basics of SQL. This special learning template uses the Northwind template database, which mimics a small business.
+                            Begin by following the instructions below. You can ask for AI assistance if you are stuck!
+                          </>
+                        :
+                          <>Sign-in to continue using our learning features!</>
+                        }
+                      </div>
+                      {this.state.loggedIn &&
+                        <>
+                          <LearningNorthwind />
+                        </>
+                      }
+                    </>
                   }
-                </div>
+                </OverlayScrollbarsComponent>
               </Panel>
               <PanelResizeHandle className="resize-handle-horizontal"/>
               <Panel defaultSize={20} minSize={5} className="input-container">
@@ -166,7 +204,7 @@ export default class App extends React.Component {
       });
     }
     document.addEventListener("keydown", (evt)=>{this.keyShortcuts(evt)}, false);
-    var regex = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i; //uuidv4
+    var regex = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}(-l)?$/i; //uuidv4
     if (regex.test(this.props.params.uuid)) {
       axios.post('/api/startsql', {id: this.props.params.uuid}, {}).then((res) => {
         this.setState({

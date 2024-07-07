@@ -1,7 +1,14 @@
 @use '../sass/colors.scss' as *;
 @import '../sass/modals.scss';
 @import '../sass/scrollbars.scss';
+@import '../sass/learning.scss';
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap');
+
+html[theme='light'] {
+  @each $color, $value in $light {
+    --clr-#{$color}: #{$value};
+  }
+}
 
 :root {
   $active-theme: $dark;
@@ -9,12 +16,8 @@
   @each $color, $value in $active-theme {
     --clr-#{$color}: #{$value};
   }
-}
 
-html[theme='light'] {
-  @each $color, $value in $light {
-    --clr-#{$color}: #{$value};
-  }
+  --rt-color-dark: #fff;
 }
 
 * {
@@ -33,6 +36,14 @@ html, body, .main {
   scrollbar-width: none;
   color: var(--clr-text);
   background-color: var(--clr-background);
+}
+
+code {
+  font-family: Consolas,"courier new";
+  color: var(--clr-code);
+  background-color: var(--clr-background);
+  padding: 3px;
+  font-size: 105%;
 }
 
 .main {
@@ -240,7 +251,18 @@ tbody td {
   width: 50%;
   text-align: center;
   margin-top: 5%;
+  margin-bottom: 2%;
   font-size: 50px;
+  font-weight: 500;
+}
+
+.subtitle {
+  margin:auto;
+  width: 50%;
+  text-align: center;
+  margin-top: 5%;
+  margin-bottom: 1%;
+  font-size: 35px;
   font-weight: 500;
 }
 
@@ -248,7 +270,6 @@ tbody td {
   margin:auto;
   width: 50%;
   text-align: left;
-  margin-top: 2%;
   font-size: 20px;
   max-width: 30%;
 }
@@ -511,6 +532,7 @@ tbody td {
   width: 50%;
   text-align: center;
   font-size: 35px;
+  font-weight: bold;
 }
 
 .info-text {
@@ -518,5 +540,9 @@ tbody td {
   width: 50%;
   margin-top: 5px;
   text-align: center;
-  font-size: 15px;
+  font-size: 16px;
+
+  .info-top-text {
+    margin-bottom: 7px;
+  }
 }

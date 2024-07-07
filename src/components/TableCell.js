@@ -76,7 +76,7 @@ export default class TableCell extends React.Component {
 
 TableCell.propTypes = {
   name: PropTypes.string.isRequired,
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   open: PropTypes.bool.isRequired,
   select: PropTypes.func.isRequired
 };

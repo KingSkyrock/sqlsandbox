@@ -3,11 +3,13 @@ const next = require('next')
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const cookieParser = require("cookie-parser");
 
 const sqlite3 = require('sqlite3').verbose();
 const formidable = require('formidable');
 const fs = require('fs');
- 
+const { jwtDecode } = require('jwt-decode');
+
 const DATA_DIR = path.join(__dirname, './data');
 const dev = process.env.NODE_ENV !== 'production'
 const hostname = 'localhost'
@@ -33,9 +35,15 @@ server.use(bodyParser.urlencoded({
   extended: true
 }))
 
+server.use(cookieParser());
+
 server.use(bodyParser.json())
 
 server.use('/data', express.static(DATA_DIR));
+
+function googleJWTValid(token) {
+  return token?.email && token.email_verified && token.exp >= Date.now()/1000
+}
 
 app.prepare().then(() => {
   server.get('*', (req, res) => {
@@ -94,8 +102,30 @@ app.prepare().then(() => {
   });
 
   server.post('/api/google_oauth', (req, res) => {
-    console.log(req.body)
-    res.end();
+    var cred = jwtDecode(req.body.credential);
+    if (googleJWTValid(cred)) {
+      res.cookie('token', req.body.credential, {httpOnly: true});
+      res.status(200).json({
+        email: cred.email
+      });
+      res.end();
+    } else {
+      res.status(401).json({
+        error: {
+          message: "Login failed"
+        }
+      });
+      res.end();
+    }
+  })
+
+  server.post('/api/check_logged_in', (req, res) => {
+    var cred = jwtDecode(req.cookies.token);
+    var loggedIn = googleJWTValid(cred);
+    res.status(200).json({
+      loggedIn: loggedIn
+    });
+    res.end()
   })
 
   server.post('/api/getschema', (req, res) => {

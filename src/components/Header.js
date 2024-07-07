@@ -12,7 +12,9 @@ import axios from 'axios';
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import 'overlayscrollbars/overlayscrollbars.css';
 import { useRouter } from "next/navigation";
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin, googleLogout } from '@react-oauth/google';
+import 'react-tooltip/dist/react-tooltip.css'
+import { Tooltip } from 'react-tooltip'
 
 export default function HeaderWrapper (props) {
   const router = useRouter();
@@ -34,6 +36,7 @@ class Header extends React.Component {
       settingsOpen: false,
       autoClear: false,
       exportedFile: null,
+      loggedIn: false,
     }
     this.closeModals = this.closeModals.bind(this);
   };
@@ -59,8 +62,12 @@ class Header extends React.Component {
       var type = '/api/startsql'
       if (template) {
         type = '/api/loadtemplate'
+        if (template == 4) {
+          newId += "-l"
+          template = 1
+        }
       }
-      storage.setItem(name, newId );
+      storage.setItem(name, newId);
       history.replaceState({}, name, "/" + newId)
       axios.post(type, {id: newId, template: template}, {}).then((res) => {
         axios.post('/api/startsql', {id: newId}, {}).then((res) => {
@@ -108,12 +115,22 @@ class Header extends React.Component {
     } else {
       this.setState({autoClear: JSON.parse(storage.getItem('autoClear').toLowerCase())});
     }
+    axios.post('/api/check_logged_in', {withCredentials: true }).then((res) => {
+      this.setState({loggedIn: true});
+      this.props.updateLoggedIn(res.data.loggedIn)
+    })
+    .catch((error) => {
+      alert(error)
+    })
   }
 
   handleOauth(credentialResponse) {
     axios.post('/api/google_oauth', credentialResponse, {}).then((res) => {
-      this.setState({signinModal: false});
-      console.log(res);
+      this.setState({signinModal: false, loggedIn: true});
+      this.props.updateLoggedIn(true)
+    })
+    .catch((error) => {
+      alert(error)
     })
   }
 
@@ -138,10 +155,21 @@ class Header extends React.Component {
         >
           <div className="modal-title">New Database Creation</div>
           <div className="modal-subtitle">Create an empty database, load a.sqlite file, or use a template</div>
+          <div className="modal-subtitle">Use the learning template if you want to start learning SQL!</div>
           <br />
           <button className="new-empty" onClick={() => this.startNew(false)}>New empty database</button>
           <button className="new-template" onClick={() => this.fileInput.current.click()}>Upload file</button>
           <input  onChange={() => this.uploadFile()} className="file-input" ref={this.fileInput} name="sqlupload" accept=".sqlite" type="file" />
+          {this.state.loggedIn ?
+            <button className="new-template" onClick={() => this.startNew(4)}>Learning Template</button>
+          :
+            <>
+              <button data-tooltip-id="learning-button" data-tooltip-place="right" className="new-template disabled">Learning Template</button>
+              <Tooltip id="learning-button" className="tooltip" clickable>
+                <a onClick={() => this.setState({signinModal: true})} >Sign in</a> to start learning
+              </Tooltip>
+            </>
+          }
           <button className="new-template" onClick={() => this.startNew(1)}>Northwind Template</button>
           <button className="new-template" onClick={() => this.startNew(2)}>Hospital Template</button>
           <button className="new-template2" onClick={() => this.startNew(3)}>Planet Express Template</button>
@@ -182,7 +210,21 @@ class Header extends React.Component {
             <a style={{ display: 'none' }} ref={this.fileA} href={'data/' + this.props.projectId + '.sqlite'} download="database.sqlite"></a>
           </>
         }
+        {this.props.loggedIn ?
+        <button
+          onClick = {
+            () => this.setState({loggedIn: false}, 
+              () => this.props.updateLoggedIn(false, 
+                () => googleLogout()
+            ))
+          } 
+          className="secondary-button signin-button">
+          Log out
+        </button>
+        :
         <button onClick={() => this.setState({signinModal: true})} className="secondary-button signin-button">Sign in</button>
+        }
+        
         <Modal
           isOpen={this.state.signinModal}
           onRequestClose={this.closeModals}
@@ -197,6 +239,8 @@ class Header extends React.Component {
             onError={() => {
               alert('Login Failed');
             }}
+            text="continue_with"
+            theme={this.props.theme ? "filled_black" : "outline"}
           />
           </div>
           
@@ -247,5 +291,6 @@ class Header extends React.Component {
 Header.propTypes = {
   projectId: PropTypes.string,
   updateTheme: PropTypes.func,
+  updateLoggedIn: PropTypes.func,
   theme: PropTypes.bool,
 };

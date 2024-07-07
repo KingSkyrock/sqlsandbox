@@ -1,0 +1,77 @@
+.task-top {
+  display: flex;
+  margin-bottom: 15px;
+
+  button {
+    box-sizing: border-box;
+    min-width: 75px;
+    background-color: var(--clr-primary); 
+    border-radius: 10px;
+    margin: 5px;
+    margin-bottom: 6px;
+    border: 1px solid var(--clr-border);
+    padding: 4px;
+    padding-bottom: 6px;
+    padding-top: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+
+    &:hover {
+      background-color: var(--clr-primary2);
+    }
+  }
+}
+
+.task-container {
+  border: 1px solid var(--clr-border);
+  border-radius: 10px;
+  width: 500px;
+  height: 400px;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background: var(--clr-primary);
+  padding: 20px;
+}
+
+.task-title {
+  font-weight: bold;
+  font-size: 25px;
+  margin: auto;
+  text-align: center;
+}
+
+.task-try-it {
+  font-weight: bold;
+  font-size: 20px;
+  margin: auto;
+  text-align: center;
+}
+
+.task-tutorial {
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.task {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.task-number {
+  font-weight: bold;
+  color: var(--clr-code);
+  margin-right: 5px;
+}
+
+.padding-element {
+  padding: 30px;
+}
+
+.unhighlight {
+  color: var(--clr-text) !important;
+  font-family: Consolas,"courier new";
+}
