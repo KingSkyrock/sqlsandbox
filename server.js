@@ -18,13 +18,19 @@ const app = next({ dev, hostname, port })
 const server = express();
 
 const accounts = new sqlite3.Database(`accounts.sqlite`);
-accounts.all("CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, learning_progress TEXT);", function(error, rows) {
+accounts.all("CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, tasks_done TEXT, learning_progress INTEGER);", function(error, rows) {
   if (error) {
     console.log(error)
   }
 });
 
 const learning_tasks = [[0,0]]
+const task_answers = [  
+  [
+    "SELECT * FROM Customer",
+    "SELECT FirstName,LastName FROM Employee"
+  ],
+]
 
 const { OpenAI } = require('openai');
 const openai = new OpenAI({ apiKey: fs.readFileSync("openai.key").toString() });
@@ -112,7 +118,7 @@ app.prepare().then(() => {
     var cred = jwtDecode(req.body.credential);
     if (googleJWTValid(cred)) {
       res.cookie('token', req.body.credential, {httpOnly: true});
-      accounts.all(`INSERT INTO accounts(email,learning_progress) VALUES ("${cred.email}", "${JSON.stringify(learning_tasks)}")`, function(error, rows) {
+      accounts.all(`INSERT INTO accounts(email,tasks_done,learning_progress) VALUES ("${cred.email}", "${JSON.stringify(learning_tasks)}", 0)`, function(error, rows) {
         if (error) {
           res.status(401).json({
             error: {
@@ -199,7 +205,86 @@ app.prepare().then(() => {
     });
   });
 
+  server.post('/api/get_learning_progress', (req, res) => {
+    var cred = jwtDecode(req.cookies.token);
+    var loggedIn = googleJWTValid(cred);
+    if (!loggedIn) {
+      res.status(401).json({
+        error: {
+          message: "You must sign in before using the learning template."
+        }
+      });
+      res.end();
+      return;
+    } else {
+      accounts.all(`SELECT tasks_done,learning_progress FROM accounts WHERE email = "${cred.email}"`, function(error, rows) {
+        if (error) {
+          res.status(500).json({
+            error: {
+              message: "Internal server error. This is not a problem with your SQL code."
+            }
+          });
+          res.end();
+        } else {
+          res.status(200).json({
+            progress: rows[0].learning_progress,
+            tasks: rows[0].tasks_done
+          })
+        }
+      });
+    }
+  });
+
   server.post('/api/runsql', (req, res) => {
+    var data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
+    var possible_answers = [];
+
+    function run_sql() {
+      new Promise(function(resolve, reject) {
+        data.all(req.body.code, function(error, rows) {
+          if (error) {
+            return reject(error);
+          } else {
+            return resolve(rows);
+          }
+        });
+     
+        setTimeout(function() {
+          return reject(408);
+        }, 5000)
+      }).then((result) => {
+        var completed_task = null;
+        for (const [answer, task_location] of possible_answers) {
+          if (JSON.stringify(answer) == JSON.stringify(result)) {
+            completed_task = task_location;
+          }
+        }
+        res.status(200).json({
+          rows: result,
+          completed_task: completed_task
+        });
+        res.end();
+      }, (error) => {
+        if (error == 408) {
+          res.status(408).json({
+            error: {
+              message: "Time limit of 5 seconds exceeded.",
+            }
+          });
+          res.end();
+        } else {
+          res.status(422).json({
+            error: {
+              message: error.message,
+              errno: error.errno,
+              code: error.code
+            }
+          });
+          res.end();
+        }
+      })
+    }
+
     if (req.body.id.endsWith("-l")) {
       var cred = jwtDecode(req.cookies.token);
       var loggedIn = googleJWTValid(cred);
@@ -213,47 +298,37 @@ app.prepare().then(() => {
         return;
       } else {
         var accounts = new sqlite3.Database("accounts.sqlite");
+        accounts.all(`SELECT tasks_done,learning_progress FROM accounts WHERE email = "${cred.email}"`, function(error, rows) {
+          if (error) {
+            res.status(500).json({
+              error: {
+                message: "Internal server error. This is not a problem with your SQL code."
+              }
+            });
+            res.end();
+          } else {
+            var relevant_tasks = JSON.parse(rows[0].tasks_done)[rows[0].learning_progress]
+            var relevant_tasks_answers = task_answers[rows[0].learning_progress]
+            for (let i = 0; i < relevant_tasks.length; i++) {
+              if (!relevant_tasks[i]) {
+                data.all(relevant_tasks_answers[i], function(error, rows2) {
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    possible_answers.push([rows2, [rows[0].learning_progress, i]]);
+                    if (i == relevant_tasks.length - 1) {
+                      run_sql();
+                    }
+                  }
+                });
+              }
+            }
+          }
+        });
       }
+    } else {
+      run_sql();
     }
-
-    var data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
-
-    new Promise(function(resolve, reject) {
-      data.all(req.body.code, function(error, rows) {
-        if (error) {
-          return reject(error);
-        } else {
-          return resolve(rows);
-        }
-      });
-   
-      setTimeout(function() {
-        return reject(408);
-      }, 5000)
-    }).then((result) => {
-      res.status(200).json({
-        rows: result
-      });
-      res.end();
-    }, (error) => {
-      if (error == 408) {
-        res.status(408).json({
-          error: {
-            message: "Time limit of 5 seconds exceeded.",
-          }
-        });
-        res.end();
-      } else {
-        res.status(422).json({
-          error: {
-            message: error.message,
-            errno: error.errno,
-            code: error.code
-          }
-        });
-        res.end();
-      }
-    })
   });
   
   server.post('/api/startsql', (req, res) => {

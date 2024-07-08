@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import axios from 'axios';
 
 export default class LearningNorthwind extends React.Component {
   constructor(props) {
@@ -113,6 +114,18 @@ export default class LearningNorthwind extends React.Component {
   handleSkip() {
     this.state.tasks[this.state.current] = new Array(this.state.tasks[this.state.current].length).fill(1);
     this.setState({progress: this.state.progress + 1}, () => this.handleChange(1))
+  }
+
+  componentDidMount() {
+    axios.post('/api/get_learning_progress', {withCredentials: true}).then((res) => {
+      this.setState({
+        progress: res.data.progress,
+        tasks: JSON.parse(res.data.tasks)
+      });
+      })
+    .catch((error) => {
+      alert(error)
+    })
   }
 
   render() {

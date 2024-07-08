@@ -245,8 +245,11 @@ export default class App extends React.Component {
       for (var h = 0; h < codearray.length; h++) {
         if (codearray[h] != undefined) {
           this.running = true;
-          axios.post('/api/runsql', {code: codearray[h], id: this.state.currentProjectId}, {})
+          axios.post('/api/runsql', {code: codearray[h], id: this.state.currentProjectId}, {withCredentials: true})
             .then((res) => {
+              if (res.data.completed_task) {
+                alert("TASK COMPLETED AT " + res.data.completed_task)
+              }
               var keys;
               var valueAmount;
               if (res.data.rows.length == 0) {
