@@ -116,7 +116,7 @@ class Header extends React.Component {
       this.setState({autoClear: JSON.parse(storage.getItem('autoClear').toLowerCase())});
     }
     axios.post('/api/check_logged_in', {withCredentials: true }).then((res) => {
-      this.setState({loggedIn: true});
+      this.setState({loggedIn: res.data.loggedIn});
       this.props.updateLoggedIn(res.data.loggedIn)
     })
     .catch((error) => {
@@ -215,7 +215,14 @@ class Header extends React.Component {
           onClick = {
             () => this.setState({loggedIn: false}, 
               () => this.props.updateLoggedIn(false, 
-                () => googleLogout()
+                () => {
+                  axios.post('/api/logout', {withCredentials: true }).then((res) => {
+                    googleLogout();
+                  })
+                  .catch((error) => {
+                    alert(error)
+                  })
+                }
             ))
           } 
           className="secondary-button signin-button">

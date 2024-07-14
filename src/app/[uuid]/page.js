@@ -23,6 +23,7 @@ export default class App extends React.Component {
     this.parser = new Parser();
     this.editor = React.createRef();
     this.toolbar = React.createRef();
+    this.learningNorthwind = React.createRef();
     this.running = false;
 
     this.state = {
@@ -163,7 +164,11 @@ export default class App extends React.Component {
                       </div>
                       {this.state.loggedIn &&
                         <>
-                          <LearningNorthwind />
+                          <LearningNorthwind 
+                            ref={this.learningNorthwind}
+                            theme={this.state.darkTheme ? "dark" : "light"}
+                            currentProjectId={this.state.currentProjectId}
+                          />
                         </>
                       }
                     </>
@@ -248,7 +253,7 @@ export default class App extends React.Component {
           axios.post('/api/runsql', {code: codearray[h], id: this.state.currentProjectId}, {withCredentials: true})
             .then((res) => {
               if (res.data.completed_task) {
-                alert("TASK COMPLETED AT " + res.data.completed_task)
+                this.learningNorthwind.current.completeTask(res.data.completed_task);
               }
               var keys;
               var valueAmount;

@@ -38,6 +38,7 @@
     "react-dom": "18.2.0",
     "react-modal": "^3.16.1",
     "react-resizable-panels": "^1.0.7",
+    "react-toastify": "^10.0.5",
     "react-tooltip": "^5.27.1",
     "sqlite3": "^5.1.6",
     "uuidv4": "^6.2.13"

@@ -1,7 +1,11 @@
 'use client'
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default class LearningNorthwind extends React.Component {
   constructor(props) {
@@ -15,6 +19,21 @@ export default class LearningNorthwind extends React.Component {
       tasks: [[0,0]]
     }
   };
+
+  completeTask(taskCoord) {
+    this.state.tasks[taskCoord[0]][taskCoord[1]] = 1;
+    this.setState({progress: this.state.tasks[taskCoord[0]].every(val => val == 1) ? this.state.progress + 1 : this.state.progress });
+    toast.success("Task complete!", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: this.props.theme,
+    });
+  }
 
   getTaskTop(title) {
     return (
@@ -112,8 +131,23 @@ export default class LearningNorthwind extends React.Component {
   }
 
   handleSkip() {
-    this.state.tasks[this.state.current] = new Array(this.state.tasks[this.state.current].length).fill(1);
-    this.setState({progress: this.state.progress + 1}, () => this.handleChange(1))
+    axios.post('/api/skip_learning', {id: this.props.currentProjectId}, {withCredentials: true}).then((res) => {
+      this.state.tasks[this.state.current] = new Array(this.state.tasks[this.state.current].length).fill(1);
+      this.setState({progress: this.state.progress + 1}, () => this.handleChange(1));
+      toast.info("Tasks skipped", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: this.props.theme,
+      });
+    })
+    .catch((error) => {
+      alert(error)
+    });
   }
 
   componentDidMount() {
@@ -122,18 +156,19 @@ export default class LearningNorthwind extends React.Component {
         progress: res.data.progress,
         tasks: JSON.parse(res.data.tasks)
       });
-      })
+    })
     .catch((error) => {
       alert(error)
-    })
+    });
   }
 
   render() {
     return (
       <>
+        <ToastContainer />
         <div className="task-container">
           {this.getTaskContainer()}
-          {this.state.current == this.state.progress && this.current != this.max &&
+          {this.state.current == this.state.progress && this.state.current != this.max &&
             <button className="skip-button" onClick={() => this.handleSkip()}>Skip</button>
           }
         </div>
@@ -141,5 +176,9 @@ export default class LearningNorthwind extends React.Component {
       </>
     );
   }
-
 }
+
+LearningNorthwind.propTypes = {
+  theme: PropTypes.string,
+  currentProjectId: PropTypes.string,
+};

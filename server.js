@@ -18,6 +18,7 @@ const app = next({ dev, hostname, port })
 const server = express();
 
 const accounts = new sqlite3.Database(`accounts.sqlite`);
+//should eventually make this specific to the db and not the account
 accounts.all("CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, tasks_done TEXT, learning_progress INTEGER);", function(error, rows) {
   if (error) {
     console.log(error)
@@ -118,8 +119,9 @@ app.prepare().then(() => {
     var cred = jwtDecode(req.body.credential);
     if (googleJWTValid(cred)) {
       res.cookie('token', req.body.credential, {httpOnly: true});
-      accounts.all(`INSERT INTO accounts(email,tasks_done,learning_progress) VALUES ("${cred.email}", "${JSON.stringify(learning_tasks)}", 0)`, function(error, rows) {
+      accounts.all(`INSERT OR IGNORE INTO accounts(email,tasks_done,learning_progress) VALUES ("${cred.email}", "${JSON.stringify(learning_tasks)}", 0)`, function(error, rows) {
         if (error) {
+          console.log(error)
           res.status(401).json({
             error: {
               message: "Login failed"
@@ -143,12 +145,26 @@ app.prepare().then(() => {
   })
 
   server.post('/api/check_logged_in', (req, res) => {
-    var cred = jwtDecode(req.cookies.token);
-    var loggedIn = googleJWTValid(cred);
-    res.status(200).json({
-      loggedIn: loggedIn
-    });
-    res.end()
+    if (req.cookies?.token) {
+      var cred = jwtDecode(req.cookies?.token);
+      var loggedIn = googleJWTValid(cred);
+      res.status(200).json({
+        loggedIn: loggedIn
+      });
+      res.end()
+    } else {
+      res.status(200).json({
+        loggedIn: false
+      });
+      res.end()
+    }
+    
+  })
+
+  server.post('/api/logout', (req, res) => {
+    res.clearCookie('token');
+    res.status(200);
+    res.end();
   })
 
   server.post('/api/getschema', (req, res) => {
@@ -235,8 +251,56 @@ app.prepare().then(() => {
     }
   });
 
+  server.post('/api/skip_learning', (req, res) => {
+    var data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
+    var cred = jwtDecode(req.cookies?.token);
+    if (req.body.id.endsWith("-l")) {
+      var loggedIn = googleJWTValid(cred);
+      if (!loggedIn) {
+        res.status(401).json({
+          error: {
+            message: "You must sign in before using the learning template."
+          }
+        });
+        res.end();
+        return;
+      } else {
+        accounts.all(`SELECT tasks_done,learning_progress FROM accounts WHERE email = "${cred.email}"`, function(error, rows) {
+          if (error) {
+            res.status(500).json({
+              error: {
+                message: "Internal server error"
+              }
+            });
+            res.end();
+          } else {
+            let learning_progress = rows[0].learning_progress;
+            let tasks_done = JSON.parse(rows[0].tasks_done);
+            tasks_done[learning_progress] = new Array(tasks_done[learning_progress].length).fill(1);
+            learning_progress += 1;
+            accounts.all(`UPDATE accounts SET tasks_done = "${JSON.stringify(tasks_done)}", learning_progress = ${learning_progress} WHERE email = "${cred.email}"`, function(error, rows) {
+              if (error) {
+                console.log(error)
+                res.status(500).json({
+                  error: {
+                    message: "Internal server error"
+                  }
+                });
+                res.end();
+              } else {
+                res.status(200);
+                res.end();
+              }
+            });
+          }
+        });
+      }
+    }
+  });
+
   server.post('/api/runsql', (req, res) => {
     var data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
+    var cred = jwtDecode(req.cookies?.token);
     var possible_answers = [];
 
     function run_sql() {
@@ -257,6 +321,35 @@ app.prepare().then(() => {
         for (const [answer, task_location] of possible_answers) {
           if (JSON.stringify(answer) == JSON.stringify(result)) {
             completed_task = task_location;
+            accounts.all(`SELECT tasks_done,learning_progress FROM accounts WHERE email = "${cred.email}"`, function(error, rows) {
+              if (error) {
+                res.status(500).json({
+                  error: {
+                    message: "Internal server error"
+                  }
+                });
+                res.end();
+              } else {
+                let learning_progress = rows[0].learning_progress;
+                let tasks_done = JSON.parse(rows[0].tasks_done);
+                tasks_done[task_location[0]][task_location[1]] = 1;
+                if (tasks_done[task_location[0]].every(val => val == 1)) {
+                  learning_progress += 1;
+                }
+                accounts.all(`UPDATE accounts SET tasks_done = "${JSON.stringify(tasks_done)}", learning_progress = ${learning_progress} WHERE email = "${cred.email}"`, function(error, rows) {
+                  if (error) {
+                    console.log(error)
+                    res.status(500).json({
+                      error: {
+                        message: "Internal server error"
+                      }
+                    });
+                    res.end();
+                  }
+                });
+              }
+            });
+            break;
           }
         }
         res.status(200).json({
@@ -286,7 +379,6 @@ app.prepare().then(() => {
     }
 
     if (req.body.id.endsWith("-l")) {
-      var cred = jwtDecode(req.cookies.token);
       var loggedIn = googleJWTValid(cred);
       if (!loggedIn) {
         res.status(401).json({
