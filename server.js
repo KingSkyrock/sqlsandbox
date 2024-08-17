@@ -25,11 +25,21 @@ accounts.all("CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOIN
   }
 });
 
-const learning_tasks = [[0,0]]
+const learning_tasks = [[0,0], [0,0,0], [0,0,0]]
 const task_answers = [  
   [
     "SELECT * FROM Customer",
     "SELECT FirstName,LastName FROM Employee"
+  ],
+  [
+    "SELECT * FROM 'Order'",
+    "SELECT * FROM Employee ORDER BY BirthDate ASC",
+    "SELECT * FROM Employee ORDER BY BirthDate DESC",
+  ],
+  [
+    "SELECT Address FROM Employee WHERE Country = \"USA\"",
+    "SELECT * from Customer WHERE ContactTitle='Sales Representative' OR ContactTitle='Sales Manager' ORDER BY City ASC",
+    "SELECT DISTINCT UnitPrice from Product WHERE UnitPrice BETWEEN 10 AND 20",
   ],
 ]
 
@@ -300,7 +310,10 @@ app.prepare().then(() => {
 
   server.post('/api/runsql', (req, res) => {
     var data = new sqlite3.Database(`data/${req.body.id}.sqlite`);
-    var cred = jwtDecode(req.cookies?.token);
+    var cred;
+    if (req.cookies?.token) {
+      cred = jwtDecode(req.cookies?.token);
+    }
     var possible_answers = [];
 
     function run_sql() {
@@ -401,19 +414,18 @@ app.prepare().then(() => {
           } else {
             var relevant_tasks = JSON.parse(rows[0].tasks_done)[rows[0].learning_progress]
             var relevant_tasks_answers = task_answers[rows[0].learning_progress]
+            console.log(relevant_tasks)
             for (let i = 0; i < relevant_tasks.length; i++) {
-              if (!relevant_tasks[i]) {
-                data.all(relevant_tasks_answers[i], function(error, rows2) {
-                  if (error) {
-                    console.log(error);
-                  } else {
-                    possible_answers.push([rows2, [rows[0].learning_progress, i]]);
-                    if (i == relevant_tasks.length - 1) {
-                      run_sql();
-                    }
+              data.all(relevant_tasks_answers[i], function(error, rows2) {
+                if (error) {
+                  console.log(error);
+                } else {
+                  possible_answers.push([rows2, [rows[0].learning_progress, i]]);
+                  if (i == relevant_tasks.length - 1) {
+                    run_sql();
                   }
-                });
-              }
+                }
+              });
             }
           }
         });

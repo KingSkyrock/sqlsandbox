@@ -240,7 +240,35 @@ tbody td {
 .signin-button {
   margin-left: auto;
   margin-right: 0.75%;
-} 
+}
+
+.ai-login-msg {
+  margin-top: 10px;
+  font-size: 12.5px;
+}
+.ai-button {
+  box-sizing: border-box;
+  min-width: 90px;
+  padding: 10px;
+  border: 0;
+  margin-top: 10px;
+  border-radius: 5px;
+  background-color: var(--clr-accent);
+  font-size: 12.5px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+  color: var(--clr-text-highlight); 
+
+  &:hover {
+    background-color: var(--clr-accent2);
+  }
+
+  &:active {
+    background-color: var(--clr-accent);
+  }
+}
 
 .settings {
   margin-right: 15px;

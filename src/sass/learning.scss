@@ -20,13 +20,14 @@
   border: 1px solid var(--clr-border);
   border-radius: 10px;
   width: 600px;
-  height: 400px;
+  height: fit-content;
   margin: auto;
   margin-top: 20px;
   margin-bottom: 20px;
   background: var(--clr-primary);
   padding: 20px;
   position: relative;
+  line-height: 1.5;
 
   button {
     box-sizing: border-box;
@@ -67,7 +68,6 @@
 
 .task-tutorial {
   margin-bottom: 30px;
-  line-height: 1.5;
 }
 
 .task {

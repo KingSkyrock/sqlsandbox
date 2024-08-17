@@ -141,6 +141,13 @@ export default class App extends React.Component {
                           <div className="error-message">
                             {this.state.error}
                           </div>
+                          {this.state.loggedIn ?
+                          <button className="ai-button">Ask AI for help!</button>
+                          :
+                          <div className="ai-login-msg">
+                            Log in to get AI assistance with your errors.
+                          </div>
+                          }
                         </>
                         :
                         <>
@@ -152,11 +159,11 @@ export default class App extends React.Component {
                     <>
                       <div className="info-title">Learn</div>
                       <div className="info-text">
-                        <div className="info-top-text">Use SandboxSQL to learn SQL with hands-on challenges and AI assistance.</div> 
+                        <div className="info-top-text">Use SandboxSQL to learn SQL with hands-on challenges.</div> 
                         {this.state.loggedIn ?
                           <>
                             Welcome! Now you can start learning the basics of SQL. This special learning template uses the Northwind template database, which mimics a small business.
-                            Begin by following the instructions below. You can ask for AI assistance if you are stuck!
+                            Begin by following the instructions below. You can ask for AI assistance under the Error tab if you run into errors!
                           </>
                         :
                           <>Sign-in to continue using our learning features!</>
