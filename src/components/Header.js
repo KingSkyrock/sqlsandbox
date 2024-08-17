@@ -177,32 +177,32 @@ class Header extends React.Component {
         <button className="secondary-button" onClick={() => {this.setState({loadSQLModal: true})}}>Load</button>
         {this.state.loadSQLModal &&
           <Modal
-          isOpen={this.state.loadSQLModal}
-          onRequestClose={this.closeModals}
-          className="modal"
-          overlayClassName="modal-overlay"
-          contentLabel="Projects Modal"
-        >
-          <div className="modal-title">Load a Database</div>
-          <div className="modal-subtitle">Select an existing project to load.</div>
-          <OverlayScrollbarsComponent defer className="projects-list">
-              {Object.entries(window.localStorage).map((project) => {
-                if (project[0].startsWith("data-")) {
-                  return (
-                    <SelectCell key={project[1]} id={project[1]} name={project[0].slice(5)} select={(name, id) => {
-                      axios.post('/api/startsql', {id: id}, {}).then((res) => {
-                        this.props.router.push("/" + id);
-                      })
-                      .catch((error) => {
-                        alert(error)
-                      })
-                      
-                    }}/>
-                  )
-                }
-              })}
-          </OverlayScrollbarsComponent>
-        </Modal>
+            isOpen={this.state.loadSQLModal}
+            onRequestClose={this.closeModals}
+            className="modal"
+            overlayClassName="modal-overlay"
+            contentLabel="Projects Modal"
+          >
+            <div className="modal-title">Load a Database</div>
+            <div className="modal-subtitle">Select an existing project to load.</div>
+            <OverlayScrollbarsComponent defer className="projects-list">
+                {Object.entries(window.localStorage).map((project) => {
+                  if (project[0].startsWith("data-")) {
+                    return (
+                      <SelectCell key={project[1]} id={project[1]} name={project[0].slice(5)} select={(name, id) => {
+                        axios.post('/api/startsql', {id: id}, {}).then((res) => {
+                          this.props.router.push("/" + id);
+                        })
+                        .catch((error) => {
+                          alert(error)
+                        })
+                        
+                      }}/>
+                    )
+                  }
+                })}
+            </OverlayScrollbarsComponent>
+          </Modal>
         }
         {this.props.projectId &&
           <>

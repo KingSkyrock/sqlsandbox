@@ -383,7 +383,8 @@ app.prepare().then(() => {
             error: {
               message: error.message,
               errno: error.errno,
-              code: error.code
+              code: error.code,
+              sql: req.body.code
             }
           });
           res.end();
@@ -414,7 +415,6 @@ app.prepare().then(() => {
           } else {
             var relevant_tasks = JSON.parse(rows[0].tasks_done)[rows[0].learning_progress]
             var relevant_tasks_answers = task_answers[rows[0].learning_progress]
-            console.log(relevant_tasks)
             for (let i = 0; i < relevant_tasks.length; i++) {
               data.all(relevant_tasks_answers[i], function(error, rows2) {
                 if (error) {

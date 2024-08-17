@@ -15,7 +15,9 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import 'overlayscrollbars/overlayscrollbars.css';
 import ToolbarButton from '@/components/ToolbarButton';
+import Modal from 'react-modal';
 
+Modal.setAppElement('#root');
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -36,15 +38,43 @@ export default class App extends React.Component {
       sql: "SELECT * FROM",
       currentToolbar: 1, 
       error: "",
+      errorSQL: null,
       ranSuccessfully: false,
       darkTheme: true,
       loggedIn: false,
+      aiModal: false,
     }; 
+    this.closeModals = this.closeModals.bind(this);
   }
 
   render() {
     return (
       <div className="main">
+        <Modal
+          isOpen={this.state.aiModal}
+          onRequestClose={this.closeModals}
+          className="modal"
+          overlayClassName="modal-overlay"
+          contentLabel="AI Error Help Modal"
+        >
+          <div className="modal-title">Error Assistance</div>
+          <div className="modal-subtitle">SQL code with error: </div>
+          <OverlayScrollbarsComponent defer className="ai-help-editor">
+            <CodeMirror
+              height="fit-content"
+              value={this.state.errorSQL}
+              extensions={[sql()]}
+              theme={this.state.darkTheme ? tokyoNight : tokyoNightDay}
+              readOnly={true}
+              editable={false}
+              lineNumbers={false}
+            />
+          </OverlayScrollbarsComponent>
+          <OverlayScrollbarsComponent defer>
+            SQLBot says:
+            
+          </OverlayScrollbarsComponent>
+        </Modal>
         <Header 
           projectId={this.state.currentProjectId}
           loggedIn={this.state.loggedIn}
@@ -142,7 +172,8 @@ export default class App extends React.Component {
                             {this.state.error}
                           </div>
                           {this.state.loggedIn ?
-                          <button className="ai-button">Ask AI for help!</button>
+                            this.state.errorSQL &&
+                              <button className="ai-button" onClick={() => this.aiHelp(this.state.errorSQL)}>Ask AI for help!</button>
                           :
                           <div className="ai-login-msg">
                             Log in to get AI assistance with your errors.
@@ -205,6 +236,13 @@ export default class App extends React.Component {
     );
   }
 
+  closeModals(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.setState({aiModal: false});
+  }
+
   componentDidMount() {
     var storage = window.localStorage;
     var html = document.querySelector('html');
@@ -245,10 +283,15 @@ export default class App extends React.Component {
     }
   }
 
+  aiHelp(code) {
+    this.setState({aiModal: true})
+  }
+
   runSQL(code) {
     !this.running &&
     this.setState({error: ""}, () => {
       var codearray = code.split(";")
+      var errorCaught = false;
       for (var h = 0; h < codearray.length; h++) {
         if (codearray[h] == "" || codearray[h] == " " || codearray[h] == "\n") {
           codearray.splice(h, 1)
@@ -316,8 +359,9 @@ export default class App extends React.Component {
             })
             .catch((error) => {
               this.running = false;
-              if (error.response && !error.response.data.error.message.includes("not an error")) {
-                this.setState({error: error.response.data.error.message}, () => {
+              if (!errorCaught && error.response && !error.response.data.error.message.includes("not an error")) {
+                this.setState({error: error.response.data.error.message, errorSQL: error.response.data.error.sql}, () => {
+                  errorCaught = true;
                   this.handleToolbarSelect(2);
                 })
               }
