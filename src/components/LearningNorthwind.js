@@ -12,17 +12,17 @@ export default class LearningNorthwind extends React.Component {
     super(props);
 
     this.max = 3;
+    this.tasks = [[0,0],[0,0,0],[0,0,0],[0,0]];
 
     this.state = {
       progress: 0,
       current: 0,
-      tasks: [[0,0],[0,0,0],[0,0,0],[0,0]]
     }
   };
 
   completeTask(taskCoord) {
-    this.state.tasks[taskCoord[0]][taskCoord[1]] = 1;
-    this.setState({progress: this.state.tasks[taskCoord[0]].every(val => val == 1) ? this.state.progress + 1 : this.state.progress });
+    this.tasks[taskCoord[0]][taskCoord[1]] = 1;
+    this.setState({progress: this.tasks[taskCoord[0]].every(val => val == 1) ? this.state.progress + 1 : this.state.progress });
     toast.success("Task complete!", {
       position: "top-center",
       autoClose: 3000,
@@ -68,7 +68,7 @@ export default class LearningNorthwind extends React.Component {
     return (
       <code>{arr.map((x, index) => 
         x.startsWith("_") ? 
-          <span className="unhighlight">
+          <span key={index} className="unhighlight">
             {
               index == arr.length - 1 ?
                 x.substring(1)
@@ -97,14 +97,14 @@ export default class LearningNorthwind extends React.Component {
           </div>
           <div className="task-try-it">Try it:</div>
           <div className="task">
-            <span className="task-number">{this.state.tasks[0][0] ? "✓" : "1. "}</span>
-            <span className={this.state.tasks[0][0] ? "completed" : ""}>
+            <span className="task-number">{this.tasks[0][0] ? "✓" : "1. "}</span>
+            <span className={this.tasks[0][0] ? "completed" : ""}>
               Select all columns from the Customer table.
             </span>
           </div>
           <div className="task">
-            <span className="task-number">{this.state.tasks[0][1] ? "✓" : "2. "}</span>
-            <span className={this.state.tasks[0][1] ? "completed" : ""}>
+            <span className="task-number">{this.tasks[0][1] ? "✓" : "2. "}</span>
+            <span className={this.tasks[0][1] ? "completed" : ""}>
               In one {this.c("SELECT")} statement, select the first and last names of all employees.
             </span>
           </div>
@@ -123,20 +123,20 @@ export default class LearningNorthwind extends React.Component {
           </div>
           <div className="task-try-it">Try it:</div>
           <div className="task">
-            <span className="task-number">{this.state.tasks[1][0] ? "✓" : "1. "}</span>
-            <span className={this.state.tasks[1][0] ? "completed" : ""}>
+            <span className="task-number">{this.tasks[1][0] ? "✓" : "1. "}</span>
+            <span className={this.tasks[1][0] ? "completed" : ""}>
               Select all columns from the Order table.
             </span>
           </div>
           <div className="task">
-            <span className="task-number">{this.state.tasks[1][1] ? "✓" : "2. "}</span>
-            <span className={this.state.tasks[1][1] ? "completed" : ""}>
+            <span className="task-number">{this.tasks[1][1] ? "✓" : "2. "}</span>
+            <span className={this.tasks[1][1] ? "completed" : ""}>
               Select all columns from the Employee table and order them by birth date in a ascending order.
             </span>
           </div>
           <div className="task">
-            <span className="task-number">{this.state.tasks[1][2] ? "✓" : "3. "}</span>
-            <span className={this.state.tasks[1][2] ? "completed" : ""}>
+            <span className="task-number">{this.tasks[1][2] ? "✓" : "3. "}</span>
+            <span className={this.tasks[1][2] ? "completed" : ""}>
               Select all columns from the Employee table and order them by birth date in a descending order.
             </span>
           </div>
@@ -153,20 +153,20 @@ export default class LearningNorthwind extends React.Component {
             </div>
             <div className="task-try-it">Try it:</div>
             <div className="task">
-              <span className="task-number">{this.state.tasks[2][0] ? "✓" : "1. "}</span>
-              <span className={this.state.tasks[2][0] ? "completed" : ""}>
+              <span className="task-number">{this.tasks[2][0] ? "✓" : "1. "}</span>
+              <span className={this.tasks[2][0] ? "completed" : ""}>
                 Select just addresses from the Employee table if they are from the USA.
               </span>
             </div>
             <div className="task">
-              <span className="task-number">{this.state.tasks[2][1] ? "✓" : "2. "}</span>
-              <span className={this.state.tasks[2][1] ? "completed" : ""}>
+              <span className="task-number">{this.tasks[2][1] ? "✓" : "2. "}</span>
+              <span className={this.tasks[2][1] ? "completed" : ""}>
                 Select all columns from the Customer table if they are a sales representative or a sales manager and order them by city in ascending order (alphabetical). 
               </span>
             </div>
             <div className="task">
-              <span className="task-number">{this.state.tasks[2][2] ? "✓" : "3. "}</span>
-              <span className={this.state.tasks[2][2] ? "completed" : ""}>
+              <span className="task-number">{this.tasks[2][2] ? "✓" : "3. "}</span>
+              <span className={this.tasks[2][2] ? "completed" : ""}>
                 Select all distinct unit prices from the Product table if the unit price is between 10 and 20. Hint: Use {this.c("WHERE _column BETWEEN _lower_number AND _upper_number")}.
               </span>
             </div>
@@ -197,7 +197,7 @@ export default class LearningNorthwind extends React.Component {
 
   handleSkip() {
     axios.post('/api/skip_learning', {id: this.props.currentProjectId}, {withCredentials: true}).then((res) => {
-      this.state.tasks[this.state.current] = new Array(this.state.tasks[this.state.current].length).fill(1);
+      this.tasks[this.state.current] = new Array(this.tasks[this.state.current].length).fill(1);
       this.setState({progress: this.state.progress + 1}, () => this.handleChange(1));
       toast.info("Tasks skipped", {
         position: "top-center",
@@ -217,9 +217,9 @@ export default class LearningNorthwind extends React.Component {
 
   componentDidMount() {
     axios.post('/api/get_learning_progress', {withCredentials: true}).then((res) => {
+      this.tasks = JSON.parse(res.data.tasks)
       this.setState({
         progress: res.data.progress,
-        tasks: JSON.parse(res.data.tasks)
       });
     })
     .catch((error) => {
