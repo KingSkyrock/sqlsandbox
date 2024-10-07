@@ -171,14 +171,14 @@ export default class App extends React.Component {
                           <div className="error-message">
                             {this.state.error}
                           </div>
-                          {this.state.loggedIn ?
+                          {/*this.state.loggedIn ?
                             this.state.errorSQL &&
                               <button className="ai-button" onClick={() => this.aiHelp(this.state.errorSQL)}>Ask AI for help!</button>
                           :
                           <div className="ai-login-msg">
                             Log in to get AI assistance with your errors.
                           </div>
-                          }
+                          */}
                         </>
                         :
                         <>
@@ -284,7 +284,15 @@ export default class App extends React.Component {
   }
 
   aiHelp(code) {
-    this.setState({aiModal: true})
+    this.setState({aiModal: true}, () => {
+      axios.post('/api/aierrorhelp', {code: code}, {}).then((res) => {
+        
+      })
+      .catch((error) => {
+        alert(error)
+      })
+    })
+
   }
 
   runSQL(code) {

@@ -11,12 +11,12 @@ export default class LearningNorthwind extends React.Component {
   constructor(props) {
     super(props);
 
-    this.max = 2;
+    this.max = 3;
 
     this.state = {
       progress: 0,
       current: 0,
-      tasks: [[0,0],[0,0,0],[0,0,0]]
+      tasks: [[0,0],[0,0,0],[0,0,0],[0,0]]
     }
   };
 
@@ -172,6 +172,15 @@ export default class LearningNorthwind extends React.Component {
             </div>
           </>
         )
+    else if (this.state.current == 3)
+      return (
+        <>
+          {this.getTaskTop("More to learning to come!")}
+          <div className="task-tutorial">
+            This feature is WIP.
+          </div>
+        </>
+      )
     else
       return <></>
   }

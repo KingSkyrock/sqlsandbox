@@ -25,7 +25,7 @@ accounts.all("CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOIN
   }
 });
 
-const learning_tasks = [[0,0], [0,0,0], [0,0,0]]
+const learning_tasks = [[0,0], [0,0,0], [0,0,0], [0,0]]
 const task_answers = [  
   [
     "SELECT * FROM Customer",
@@ -40,20 +40,11 @@ const task_answers = [
     "SELECT Address FROM Employee WHERE Country = \"USA\"",
     "SELECT * from Customer WHERE ContactTitle='Sales Representative' OR ContactTitle='Sales Manager' ORDER BY City ASC",
     "SELECT DISTINCT UnitPrice from Product WHERE UnitPrice BETWEEN 10 AND 20",
-  ],
+  ], ["SELECT * FROM Customer", "SELECT FirstName,LastName FROM Employee"]
 ]
 
 const { OpenAI } = require('openai');
 const openai = new OpenAI({ apiKey: fs.readFileSync("openai.key").toString() });
-
-async function main() {
-  assistant = await openai.beta.assistants.create({
-    name: "SQL Bot",
-    instructions: "You are a helpful assistant to assist people with fixing their SQLite queries and learning SQLite. Help write queries and teach.",
-    model: "gpt-4o"
-  });
-}
-//main();
 
 server.use(bodyParser.urlencoded({
   extended: true
@@ -85,44 +76,8 @@ app.prepare().then(() => {
     }
   });
 
-  server.post('/api/assistant', (req, res) => {
-    async function talk() {
-      const thread = await openai.beta.threads.create();
-      const message = await openai.beta.threads.messages.create(
-        thread.id,
-        {
-          role: "user",
-          content: "test message"
-        }
-      );
-      const run = openai.beta.threads.runs.stream(thread.id, {
-        assistant_id: assistant.id
-      })
-        .on('textCreated', (text) => process.stdout.write('\nassistant > '))
-        .on('textDelta', (textDelta, snapshot) => process.stdout.write(textDelta.value))
-        .on('toolCallCreated', (toolCall) => process.stdout.write(`\nassistant > ${toolCall.type}\n\n`))
-        .on('toolCallDelta', (toolCallDelta, snapshot) => {
-          if (toolCallDelta.type === 'code_interpreter') {
-            if (toolCallDelta.code_interpreter.input) {
-              process.stdout.write(toolCallDelta.code_interpreter.input);
-            }
-            if (toolCallDelta.code_interpreter.outputs) {
-              process.stdout.write("\noutput >\n");
-              toolCallDelta.code_interpreter.outputs.forEach(output => {
-                if (output.type === "logs") {
-                  process.stdout.write(`\n${output.logs}\n`);
-                }
-              });
-            }
-          }
-        });
-      res.status(200);
-      res.end();
-    }
-
-    if (assistant.id)
-      talk();
-    
+  server.post('/api/aierrorhelp', (req, res) => {
+    //WIP
   });
 
   server.post('/api/google_oauth', (req, res) => {
@@ -415,17 +370,21 @@ app.prepare().then(() => {
           } else {
             var relevant_tasks = JSON.parse(rows[0].tasks_done)[rows[0].learning_progress]
             var relevant_tasks_answers = task_answers[rows[0].learning_progress]
-            for (let i = 0; i < relevant_tasks.length; i++) {
-              data.all(relevant_tasks_answers[i], function(error, rows2) {
-                if (error) {
-                  console.log(error);
-                } else {
-                  possible_answers.push([rows2, [rows[0].learning_progress, i]]);
-                  if (i == relevant_tasks.length - 1) {
-                    run_sql();
+            if (relevant_tasks) {
+              for (let i = 0; i < relevant_tasks.length; i++) {
+                data.all(relevant_tasks_answers[i], function(error, rows2) {
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    possible_answers.push([rows2, [rows[0].learning_progress, i]]);
+                    if (i == relevant_tasks.length - 1) {
+                      run_sql();
+                    }
                   }
-                }
-              });
+                });
+              }
+            } else {
+              run_sql();
             }
           }
         });
