@@ -84,7 +84,8 @@ app.prepare().then(() => {
     var cred = jwtDecode(req.body.credential);
     if (googleJWTValid(cred)) {
       res.cookie('token', req.body.credential, {httpOnly: true});
-      accounts.all(`INSERT OR IGNORE INTO accounts(email,tasks_done,learning_progress) VALUES ("${cred.email}", "${JSON.stringify(learning_tasks)}", 0)`, function(error, rows) {
+      let params = { $email: cred.email, $tasks_done: JSON.stringify(learning_tasks) };
+      accounts.all("INSERT OR IGNORE INTO accounts(email,tasks_done,learning_progress) VALUES ($email, $tasks_done, 0)", params, function(error, rows) {
         if (error) {
           console.log(error)
           res.status(401).json({
@@ -198,7 +199,8 @@ app.prepare().then(() => {
       res.end();
       return;
     } else {
-      accounts.all(`SELECT tasks_done,learning_progress FROM accounts WHERE email = "${cred.email}"`, function(error, rows) {
+      let params = { $email: cred.email };
+      accounts.all("SELECT tasks_done,learning_progress FROM accounts WHERE email = $email", params, function(error, rows) {
         if (error) {
           res.status(500).json({
             error: {
@@ -230,7 +232,8 @@ app.prepare().then(() => {
         res.end();
         return;
       } else {
-        accounts.all(`SELECT tasks_done,learning_progress FROM accounts WHERE email = "${cred.email}"`, function(error, rows) {
+        let params = { $email: cred.email };
+        accounts.all("SELECT tasks_done,learning_progress FROM accounts WHERE email = $email", params, function(error, rows) {
           if (error) {
             res.status(500).json({
               error: {
@@ -243,7 +246,8 @@ app.prepare().then(() => {
             let tasks_done = JSON.parse(rows[0].tasks_done);
             tasks_done[learning_progress] = new Array(tasks_done[learning_progress].length).fill(1);
             learning_progress += 1;
-            accounts.all(`UPDATE accounts SET tasks_done = "${JSON.stringify(tasks_done)}", learning_progress = ${learning_progress} WHERE email = "${cred.email}"`, function(error, rows) {
+            let params = { $email: cred.email, $tasks_done: JSON.stringify(tasks_done), $learning_progress: learning_progress };
+            accounts.all("UPDATE accounts SET tasks_done = $tasks_done, learning_progress = $learning_progress WHERE email = $email", params, function(error, rows) {
               if (error) {
                 console.log(error)
                 res.status(500).json({
@@ -289,7 +293,8 @@ app.prepare().then(() => {
         for (const [answer, task_location] of possible_answers) {
           if (JSON.stringify(answer) == JSON.stringify(result)) {
             completed_task = task_location;
-            accounts.all(`SELECT tasks_done,learning_progress FROM accounts WHERE email = "${cred.email}"`, function(error, rows) {
+            let params = { $email: cred.email };
+            accounts.all("SELECT tasks_done,learning_progress FROM accounts WHERE email = $email", params, function(error, rows) {
               if (error) {
                 res.status(500).json({
                   error: {
@@ -304,7 +309,8 @@ app.prepare().then(() => {
                 if (tasks_done[task_location[0]].every(val => val == 1)) {
                   learning_progress += 1;
                 }
-                accounts.all(`UPDATE accounts SET tasks_done = "${JSON.stringify(tasks_done)}", learning_progress = ${learning_progress} WHERE email = "${cred.email}"`, function(error, rows) {
+                let params = { $tasks_done: JSON.stringify(tasks_done), $learning_progress: learning_progress, $email: cred.email };
+                accounts.all("UPDATE accounts SET tasks_done = $tasks_done, learning_progress = $learning_progress WHERE email = $email", params, function(error, rows) {
                   if (error) {
                     console.log(error)
                     res.status(500).json({
@@ -359,7 +365,8 @@ app.prepare().then(() => {
         return;
       } else {
         var accounts = new sqlite3.Database("accounts.sqlite");
-        accounts.all(`SELECT tasks_done,learning_progress FROM accounts WHERE email = "${cred.email}"`, function(error, rows) {
+        let params = { $email: cred.email };
+        accounts.all("SELECT tasks_done,learning_progress FROM accounts WHERE email = $email", params, function(error, rows) {
           if (error) {
             res.status(500).json({
               error: {
