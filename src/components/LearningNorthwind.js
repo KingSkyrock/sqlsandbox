@@ -215,7 +215,7 @@ export default class LearningNorthwind extends React.Component {
     });
   }
 
-  componentDidMount() {
+  getLearningProgress() {
     axios.post('/api/get_learning_progress', {withCredentials: true}).then((res) => {
       this.tasks = JSON.parse(res.data.tasks)
       this.setState({
@@ -225,6 +225,10 @@ export default class LearningNorthwind extends React.Component {
     .catch((error) => {
       alert(error)
     });
+  }
+
+  componentDidMount() {
+    this.getLearningProgress();
   }
 
   render() {

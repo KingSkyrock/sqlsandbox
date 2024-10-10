@@ -259,6 +259,7 @@ export default class App extends React.Component {
       axios.post('/api/startsql', {id: this.props.params.uuid}, {}).then((res) => {
         this.setState({
           currentProjectId: this.props.params.uuid,
+          currentToolbar: this.props.params.uuid.endsWith("-l") ? 3 : 1,
           tables: res.data.tables
         });
       })
