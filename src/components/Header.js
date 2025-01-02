@@ -154,7 +154,7 @@ class Header extends React.Component {
           contentLabel="New project modal"
         >
           <div className="modal-title">New Database Creation</div>
-          <div className="modal-subtitle">Create an empty database, load a.sqlite file, or use a template</div>
+          <div className="modal-subtitle">Create an empty database, load a .sqlite file, or use a template</div>
           <div className="modal-subtitle">Use the learning template if you want to start learning SQL!</div>
           <br />
           <button className="new-empty" onClick={() => this.startNew(false)}>New empty database</button>
