@@ -1,6 +1,6 @@
 import './globals.scss'
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import oauthConfig from '../../oauth.config.js'
+import appConfig from '../../config.js';
 
 export const metadata = {
   title: 'Sandbox SQL',
@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
 					href="/images/sandboxsqllogo.png"
 				/>
 			</head>
-			<body><GoogleOAuthProvider clientId={oauthConfig.clientid}>{children}</GoogleOAuthProvider></body>
+			<body><GoogleOAuthProvider clientId={appConfig.googleOauthClientid}>{children}</GoogleOAuthProvider></body>
     </html>
   )
 }

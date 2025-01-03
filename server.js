@@ -17,6 +17,8 @@ const port = process.env.PORT || 3000
 const app = next({ dev, hostname, port })
 const server = express();
 
+const appConfig = require('./config');
+
 const accounts = new sqlite3.Database(`accounts.sqlite`);
 //should eventually make this specific to the db and not the account
 accounts.all("CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, tasks_done TEXT, learning_progress INTEGER);", function(error, rows) {
@@ -44,7 +46,7 @@ const task_answers = [
 ]
 
 const { OpenAI } = require('openai');
-const openai = new OpenAI({ apiKey: fs.readFileSync("openai.key").toString() });
+const openai = new OpenAI({ apiKey: appConfig.openaiKey });
 
 server.use(bodyParser.urlencoded({
   extended: true
@@ -487,7 +489,7 @@ if (process.env.NODE_ENV === "production") {
     .init({
         packageRoot: __dirname,
         configDir: "./greenlock.d",
-        maintainerEmail: "koxaha7706@kembung.com",
+        maintainerEmail: appConfig.maintainerEmail,
 
         cluster: false
     })

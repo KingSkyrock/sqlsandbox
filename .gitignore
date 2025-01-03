@@ -3,6 +3,9 @@
 /data/*.sqlite
 accounts.sqlite
 
+# App config
+config.json
+
 # dependencies
 /node_modules
 /.pnp
@@ -21,7 +24,6 @@ accounts.sqlite
 # misc
 .DS_Store
 *.pem
-*.key
 
 # debug
 npm-debug.log*
